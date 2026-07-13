@@ -1,0 +1,12 @@
+{
+  "name": "Celestia — AI Astrology",
+  "short_name": "Celestia",
+  "description": "Personalized AI astrology powered by your birth chart.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#070512",
+  "theme_color": "#070512",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

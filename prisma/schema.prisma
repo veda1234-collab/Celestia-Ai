@@ -1,0 +1,34 @@
+// Celestia data model.
+// SQLite by default (runs with zero setup). For production, switch `provider`
+// to "postgresql" and point DATABASE_URL at your Postgres instance — the app
+// code is unchanged. JSON payloads are stored as text for cross-DB portability.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime     @default(now())
+  charts       SavedChart[]
+}
+
+model SavedChart {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String
+  details   String // JSON string of BirthDetails
+  chart     String // JSON string of BirthChart
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}

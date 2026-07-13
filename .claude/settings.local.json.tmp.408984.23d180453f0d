@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(command -v pnpm)",
+      "Bash(pnpm --version)",
+      "Bash(pnpm dev *)",
+      "Bash(curl -s -o /dev/null -w \"3001 -> HTTP %{http_code}\\\\n\" http://localhost:3001)",
+      "Bash(curl -s -o /dev/null -w \"3000 -> HTTP %{http_code}\\\\n\" http://localhost:3000)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(curl -s -o /dev/null -w \"landing / -> HTTP %{http_code}\\\\n\" http://localhost:3001/)",
+      "Bash(curl -s -o /dev/null -w \"onboarding -> HTTP %{http_code}\\\\n\" http://localhost:3001/onboarding)",
+      "Bash(curl -s -o /dev/null -w \"3001 -> %{http_code}\\\\n\" http://localhost:3001)",
+      "Bash(timeout 25 bash -c 'curl -sI https://download.geonames.org/export/dump/IN.zip 2>&1 | head -8')",
+      "Bash(curl -s -o IN.zip https://download.geonames.org/export/dump/IN.zip)",
+      "Bash(curl -s -o admin1CodesASCII.txt https://download.geonames.org/export/dump/admin1CodesASCII.txt)",
+      "Bash(unzip -o -q IN.zip)",
+      "Bash(awk -F'\\\\t' '{print $7}' IN.txt)",
+      "Bash(awk -F'\\\\t' '$7==\"P\"{print $2\"\\\\t\"$11\"\\\\t\"$5\"\\\\t\"$6\"\\\\t\"$15\"\\\\t\"$18; c++} c>5{exit}' IN.txt)",
+      "Bash(awk -F'\\\\t' '{print $1\"\\\\t\"$2}')",
+      "Bash(awk '-F\\\\t' ' *)",
+      "Bash(awk '{print $5\" bytes\"}')",
+      "Bash(gzip -9 -c india-places.tsv)",
+      "Bash(curl -s -o /dev/null -w \"server 3001: %{http_code}\\\\n\" http://localhost:3001)",
+      "Bash(pnpm typecheck *)",
+      "Bash(git config *)",
+      "Bash(gh auth *)",
+      "Bash(git --version)",
+      "Bash(git init *)",
+      "Bash(git checkout *)",
+      "Bash(git branch *)",
+      "Bash(git add *)"
+    ]
+  }
+}
