@@ -4,13 +4,14 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { useProfile } from '@/lib/store/profile';
-import { useMounted } from '@/lib/hooks';
+import { useChartRefresh, useMounted } from '@/lib/hooks';
 import { CosmicBackground } from '@/components/cosmic';
 import { DashboardHeader } from '@/components/dashboard/header';
 import { SummaryHero } from '@/components/dashboard/summary';
 import { ChartCard } from '@/components/dashboard/chart-card';
 import { PlanetTable } from '@/components/dashboard/planet-table';
 import { DashaCard } from '@/components/dashboard/dasha-card';
+import { TransitCard } from '@/components/dashboard/transit-card';
 import { LuckyCard, YogaDoshaCard, HoroscopeCard } from '@/components/dashboard/insight-cards';
 import { Reveal } from '@/components/ui/reveal';
 
@@ -18,11 +19,13 @@ export default function DashboardPage() {
   const router = useRouter();
   const mounted = useMounted();
   const chart = useProfile((s) => s.chart);
+  const details = useProfile((s) => s.details);
   const clear = useProfile((s) => s.clear);
+  const recomputing = useChartRefresh(mounted);
 
   useEffect(() => {
-    if (mounted && !chart) router.replace('/onboarding');
-  }, [mounted, chart, router]);
+    if (mounted && !chart && !recomputing) router.replace('/onboarding');
+  }, [mounted, chart, recomputing, router]);
 
   if (!mounted || !chart) {
     return (
@@ -60,9 +63,14 @@ export default function DashboardPage() {
           </Reveal>
         </div>
 
-        <Reveal>
-          <PlanetTable chart={chart} />
-        </Reveal>
+        <div className="grid gap-6 lg:grid-cols-3">
+          <Reveal className="lg:col-span-2">
+            <PlanetTable chart={chart} />
+          </Reveal>
+          <Reveal delay={0.08}>
+            <TransitCard details={details} />
+          </Reveal>
+        </div>
 
         <div className="grid gap-6 md:grid-cols-3">
           <Reveal>

@@ -15,15 +15,13 @@ import {
   norm360,
   zonedToUtc,
 } from './astronomy';
-import { computeVimshottari } from './dasha';
+import { assessDashaLords, computeVimshottari } from './dasha';
 import { detectDoshas, detectYogas } from './yogas';
+import { computeVargas } from './varga';
 import {
-  DEBILITATION,
-  EXALTATION,
-  FRIENDS,
   NAKSHATRAS,
-  OWN_SIGNS,
   PLANET_ORDER,
+  dignityOf,
   signLord,
   signName,
 } from './signs';
@@ -33,17 +31,6 @@ const PADA_SPAN = NAK_SPAN / 4;
 const NAV_SPAN = 30 / 9;
 
 const houseFromSign = (ascSign: number, sign: number): number => (((sign - ascSign) % 12) + 12) % 12 + 1;
-
-function dignityOf(id: PlanetId, sign: number): Dignity {
-  if (id === 'Rahu' || id === 'Ketu') return 'neutral';
-  if (EXALTATION[id] === sign) return 'exalted';
-  if (DEBILITATION[id] === sign) return 'debilitated';
-  if (OWN_SIGNS[id]?.includes(sign)) return 'own';
-  const lord = signLord(sign);
-  if (lord === id) return 'own';
-  if (FRIENDS[id]?.includes(lord)) return 'friend';
-  return 'neutral';
-}
 
 function strengthOf(dignity: Dignity, house: number, retrograde: boolean): number {
   let s = 50;
@@ -83,6 +70,7 @@ export class LocalAstrologyEngine implements AstrologyEngine {
 
     // Planets.
     const dtDays = 1; // for retrograde direction test
+    const planetSid: { id: PlanetId; sidLon: number; retrograde: boolean }[] = [];
     const planets: PlanetPosition[] = PLANET_ORDER.map((id): PlanetPosition => {
       const trop = bodyLongitude(id, jd);
       const sid = norm360(trop - ayan);
@@ -101,6 +89,7 @@ export class LocalAstrologyEngine implements AstrologyEngine {
       }
 
       const dignity = dignityOf(id, sign);
+      planetSid.push({ id, sidLon: sid, retrograde });
       return {
         id,
         longitude: Number(display.toFixed(4)),
@@ -147,8 +136,17 @@ export class LocalAstrologyEngine implements AstrologyEngine {
       }),
     };
 
-    // Vimśottari daśā (from sidereal Moon).
-    const dasha = computeVimshottari(moonSid, utc, now);
+    // Divisional charts (D1–D60) + Vimśopaka bala, from sidereal longitudes.
+    const { charts: vargas, vimshopaka } = computeVargas({
+      ascSidLon: ascSid,
+      sunSidLon: sunSid,
+      moonSidLon: moonSid,
+      planets: planetSid,
+    });
+
+    // Vimśottari daśā (from sidereal Moon), with explainable lord favourability.
+    const dashaAssessments = assessDashaLords(planets, ascSign, vimshopaka);
+    const dasha = computeVimshottari(moonSid, utc, now, dashaAssessments);
 
     // Yogas & doshas.
     const currentSaturnSid = norm360(
@@ -199,6 +197,8 @@ export class LocalAstrologyEngine implements AstrologyEngine {
       planets,
       houses,
       navamsa,
+      vargas,
+      vimshopaka,
       dasha,
       yogas,
       doshas,

@@ -7,7 +7,10 @@ import { clientKey, rateLimit } from '@/lib/utils/rate-limit';
 export const runtime = 'nodejs';
 
 const schema = z.object({
-  chart: z.object({ meta: z.object({ name: z.string() }) }).passthrough(),
+  // `meta` must pass through too: without it zod strips `ayanamsa`/`system`,
+  // and anything downstream that reconstructs sidereal longitudes (gochar) gets
+  // NaN instead of a chart.
+  chart: z.object({ meta: z.object({ name: z.string() }).passthrough() }).passthrough(),
 });
 
 export async function POST(req: Request) {

@@ -83,12 +83,38 @@ export interface HouseCusp {
   planets: PlanetId[];
 }
 
+/** 1 = mahā, 2 = antar, 3 = pratyantar, 4 = sūkṣma. */
+export type DashaLevel = 1 | 2 | 3 | 4;
+export type DashaQuality = 'good' | 'mixed' | 'challenging';
+
 export interface DashaPeriod {
   lord: PlanetId;
+  level: DashaLevel;
   startISO: string;
   endISO: string;
   years: number;
+  /** 0–100 favourability of this period's lord (see DashaAssessment). */
+  favorability?: number;
+  quality?: DashaQuality;
   sub?: DashaPeriod[];
+}
+
+/** Explainable scoring of a daśā lord: score, verdict and the reasons why. */
+export interface DashaAssessment {
+  lord: PlanetId;
+  score: number; // 0–100
+  quality: DashaQuality;
+  reasons: string[];
+}
+
+/** A concrete upcoming (antar-level) window, tagged good/challenging. */
+export interface DashaWindow {
+  lord: PlanetId;
+  mahaLord: PlanetId;
+  startISO: string;
+  endISO: string;
+  score: number;
+  quality: DashaQuality;
 }
 
 export interface Yoga {
@@ -121,6 +147,48 @@ export interface NavamsaChart {
   positions: { id: PlanetId; sign: number; signName: string }[];
 }
 
+/** The twenty divisional (varga) charts surfaced by the engine. */
+export type VargaId =
+  | 'D1' | 'D2' | 'D3' | 'D4' | 'D5' | 'D6' | 'D7' | 'D8' | 'D9' | 'D10'
+  | 'D11' | 'D12' | 'D16' | 'D20' | 'D24' | 'D27' | 'D30' | 'D40' | 'D45' | 'D60';
+
+/** A single planet's placement within one divisional chart. */
+export interface VargaPlanet {
+  id: PlanetId;
+  sign: number; // 0–11 in the varga
+  signName: string;
+  /** Whole-sign house counted from the varga lagna. */
+  house: number; // 1–12
+  /** Dignity evaluated in the varga sign. */
+  dignity: Dignity;
+  /** Carried from the rāśi chart (a varga does not change direction). */
+  retrograde: boolean;
+  /** True when the varga sign equals the planet's rāśi (D1) sign. */
+  vargottama: boolean;
+  /** Natural benefic (true) vs malefic (false). */
+  benefic: boolean;
+}
+
+/** One complete divisional chart: varga lagna + all nine grahas within it. */
+export interface VargaChart {
+  id: VargaId;
+  /** Number of divisions per sign (e.g. 9 for D9). */
+  divisions: number;
+  /** Sanskrit name, e.g. "Navāṁśa". */
+  name: string;
+  /** What this varga is classically read for, e.g. "marriage, dharma, fortune". */
+  purpose: string;
+  /** True for the classical Parāśari vargas; false for the cyclic-scheme ones. */
+  classical: boolean;
+  ascendant: { sign: number; signName: string };
+  planets: VargaPlanet[];
+  benefics: PlanetId[];
+  malefics: PlanetId[];
+  vargottamaPlanets: PlanetId[];
+  /** Aggregate 0–100 strength of the chart (dignity + placement). */
+  strength: number;
+}
+
 export interface ChartMeta {
   system: ZodiacSystem;
   ayanamsa: number;
@@ -146,9 +214,24 @@ export interface BirthChart {
   planets: PlanetPosition[];
   houses: HouseCusp[];
   navamsa: NavamsaChart;
+  /** All twenty divisional charts (D1–D60), computed from sidereal longitudes. */
+  vargas: VargaChart[];
+  /** Vimśopaka bala 0–100 per planet — strength across the ṣoḍaśavarga (16 charts). */
+  vimshopaka: Record<PlanetId, number>;
   dasha: {
     sequence: DashaPeriod[];
-    current: { maha: DashaPeriod; antar: DashaPeriod | null };
+    current: {
+      maha: DashaPeriod;
+      antar: DashaPeriod | null;
+      pratyantar: DashaPeriod | null;
+      sookshma: DashaPeriod | null;
+    };
+    /** The active mahā→antar→pratyantar→sūkṣma stack, outermost first. */
+    stack: DashaPeriod[];
+    /** Per-lord favourability with human-readable reasons. */
+    assessments: Record<PlanetId, DashaAssessment>;
+    favorablePeriods: DashaWindow[];
+    challengingPeriods: DashaWindow[];
     balanceAtBirthYears: number;
   };
   yogas: Yoga[];

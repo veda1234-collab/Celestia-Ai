@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
+export { useChartRefresh } from './use-chart-refresh';
+
 /** True after first client mount — guards against hydration mismatches. */
 export function useMounted(): boolean {
   const [mounted, setMounted] = useState(false);

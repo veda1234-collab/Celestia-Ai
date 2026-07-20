@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2, Trash2, Volume2, VolumeX } from 'lucide-react';
 import { useProfile } from '@/lib/store/profile';
 import { useChat } from '@/lib/store/chat';
-import { useMounted } from '@/lib/hooks';
+import { useChartRefresh, useMounted } from '@/lib/hooks';
 import { CosmicBackground } from '@/components/cosmic';
 import { ChatWindow } from '@/components/chat/chat-window';
 import { cn } from '@/lib/utils/cn';
@@ -18,10 +18,11 @@ export default function ChatPage() {
   const details = useProfile((s) => s.details);
   const resetChat = useChat((s) => s.reset);
   const [speak, setSpeak] = useState(false);
+  const recomputing = useChartRefresh(mounted);
 
   useEffect(() => {
-    if (mounted && !chart) router.replace('/onboarding');
-  }, [mounted, chart, router]);
+    if (mounted && !chart && !recomputing) router.replace('/onboarding');
+  }, [mounted, chart, recomputing, router]);
 
   const toggleSpeak = () => {
     setSpeak((v) => {

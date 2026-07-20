@@ -1,4 +1,4 @@
-import type { PlanetId } from './types';
+import type { Dignity, PlanetId } from './types';
 
 export interface SignInfo {
   index: number;
@@ -29,6 +29,23 @@ export const ZODIAC: SignInfo[] = [
 
 export const signName = (i: number): string => ZODIAC[((i % 12) + 12) % 12]!.name;
 export const signLord = (i: number): PlanetId => ZODIAC[((i % 12) + 12) % 12]!.ruler;
+
+/**
+ * Classify a planet's dignity in a given sign (exalted / debilitated / own /
+ * friend / neutral / enemy). Shared by the rāśi engine and every varga.
+ * Node lords (Rāhu/Ketu) are treated as neutral for sign-dignity purposes.
+ */
+export function dignityOf(id: PlanetId, sign: number): Dignity {
+  const s = ((sign % 12) + 12) % 12;
+  if (id === 'Rahu' || id === 'Ketu') return 'neutral';
+  if (EXALTATION[id] === s) return 'exalted';
+  if (DEBILITATION[id] === s) return 'debilitated';
+  if (OWN_SIGNS[id]?.includes(s)) return 'own';
+  const lord = signLord(s);
+  if (lord === id) return 'own';
+  if (FRIENDS[id]?.includes(lord)) return 'friend';
+  return 'neutral';
+}
 
 export interface PlanetInfo {
   id: PlanetId;

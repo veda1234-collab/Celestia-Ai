@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { BirthChart } from '@/lib/astrology/types';
+import { transitsForChart } from '@/lib/astrology/transit';
+import type { TransitReport } from '@/lib/astrology/transit';
 import { activeProviderName, buildSystemPrompt, getProvider } from '@/lib/ai';
 import type { ChatMessage } from '@/lib/ai';
 import { chatRequestSchema } from '@/lib/validation';
@@ -32,7 +34,16 @@ export async function POST(req: Request) {
   const messages = parsed.data.messages as ChatMessage[];
   const language = parsed.data.language ?? 'en';
 
-  const system = buildSystemPrompt(chart, language);
+  // Transits are recomputed per request rather than read off the stored chart,
+  // which was fixed at onboarding time and would be stale by now.
+  let transits: TransitReport | undefined;
+  try {
+    transits = transitsForChart(chart);
+  } catch (err) {
+    console.error('transit computation failed; continuing without gochar', err);
+  }
+
+  const system = buildSystemPrompt(chart, language, transits);
   const provider = getProvider(chart);
   const encoder = new TextEncoder();
 
