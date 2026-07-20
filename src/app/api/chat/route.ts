@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import type { BirthChart } from '@/lib/astrology/types';
 import { transitsForChart } from '@/lib/astrology/transit';
 import type { TransitReport } from '@/lib/astrology/transit';
+import { retrieve } from '@/lib/rag/retrieve';
+import type { RetrievedPassage } from '@/lib/rag/types';
 import { activeProviderName, buildSystemPrompt, getProvider } from '@/lib/ai';
 import type { ChatMessage } from '@/lib/ai';
 import { chatRequestSchema } from '@/lib/validation';
@@ -43,7 +45,23 @@ export async function POST(req: Request) {
     console.error('transit computation failed; continuing without gochar', err);
   }
 
-  const system = buildSystemPrompt(chart, language, transits);
+  // Retrieve doctrine relevant to what was actually asked. `retrieve` never
+  // throws — a retrieval failure should cost the answer its grounding, not the
+  // answer itself — so an empty result simply means an unbuilt or broken index.
+  const lastUser = [...messages].reverse().find((m) => m.role === 'user');
+  let passages: RetrievedPassage[] = [];
+  if (lastUser?.content) {
+    const t0 = Date.now();
+    const result = await retrieve(lastUser.content, { limit: 5 });
+    passages = result.passages;
+    if (!result.available) {
+      console.warn('rag index unavailable — answering without reference material (run: pnpm rag:build)');
+    } else {
+      console.log(`rag: ${passages.length} passages in ${Date.now() - t0}ms`);
+    }
+  }
+
+  const system = buildSystemPrompt(chart, language, transits, passages);
   const provider = getProvider(chart);
   const encoder = new TextEncoder();
 

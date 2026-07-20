@@ -10,6 +10,35 @@
 import type { PlanetId } from '@/lib/astrology/types';
 import { COLOR } from './theme';
 
+/**
+ * The Vedastra star mark, drawn with the same geometry as the on-screen SVG
+ * (see components/brand/vedastra-mark.tsx) so print and screen cannot drift.
+ */
+export function drawVedastraMark(
+  doc: Pick<Doc, 'save' | 'restore' | 'moveTo' | 'lineTo' | 'fill' | 'stroke' | 'lineWidth'>,
+  cx: number,
+  cy: number,
+  radius: number,
+  color: string,
+): void {
+  const DEG = Math.PI / 180;
+  const unit = radius / 94; // the SVG's cardinal length
+  const point = (angleDeg: number, tip: number, shoulder: number, halfDeg: number) => {
+    const a = angleDeg * DEG - Math.PI / 2;
+    const h = halfDeg * DEG;
+    const at = (ang: number, r: number) => [cx + Math.cos(ang) * r * unit, cy + Math.sin(ang) * r * unit] as const;
+    const [tx, ty] = at(a, tip);
+    const [rx, ry] = at(a + h, shoulder);
+    const [lx, ly] = at(a - h, shoulder);
+    doc.moveTo(tx, ty).lineTo(rx, ry).lineTo(cx, cy).lineTo(lx, ly).lineTo(tx, ty);
+  };
+
+  doc.save();
+  for (let i = 0; i < 8; i++) point(i * 45, i % 2 === 0 ? 94 : 64, 26, 22.5);
+  doc.fill(color);
+  doc.restore();
+}
+
 /** Two-letter forms are what actually fit inside a house cell. */
 export const PLANET_ABBR: Record<PlanetId, string> = {
   Sun: 'Su', Moon: 'Mo', Mars: 'Ma', Mercury: 'Me', Jupiter: 'Ju',

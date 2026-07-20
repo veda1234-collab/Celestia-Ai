@@ -32,7 +32,10 @@ export const chatMessageSchema = z.object({
 export const chatRequestSchema = z.object({
   messages: z.array(chatMessageSchema).min(1).max(50),
   // Chart is trusted structurally; validated loosely to keep the payload light.
-  chart: z.object({ meta: z.object({ name: z.string() }) }).passthrough(),
+  // `meta` must pass through as well — without it zod silently drops
+  // `ayanamsa` and `system`, and the gochar layer, which reconstructs sidereal
+  // longitudes from them, cannot run at all.
+  chart: z.object({ meta: z.object({ name: z.string() }).passthrough() }).passthrough(),
   language: z.string().optional(),
 });
 
@@ -50,7 +53,9 @@ export const loginSchema = z.object({
 export const saveChartSchema = z.object({
   label: z.string().min(1).max(120),
   details: birthDetailsSchema,
-  chart: z.object({ meta: z.object({ name: z.string() }) }).passthrough(),
+  // Same reason as above: a stripped `meta` would persist a chart that can
+  // never have its transits computed again.
+  chart: z.object({ meta: z.object({ name: z.string() }).passthrough() }).passthrough(),
 });
 
 export type BirthDetailsInput = z.infer<typeof birthDetailsSchema>;

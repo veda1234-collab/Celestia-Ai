@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
+import { VedastraMark } from '@/components/brand/vedastra-mark';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 
@@ -15,9 +15,7 @@ const links = [
 export function Logo({ className }: { className?: string }) {
   return (
     <Link href="/" className={`group flex items-center gap-2 ${className ?? ''}`}>
-      <span className="relative grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-primary to-accent shadow-glow">
-        <Sparkles className="h-5 w-5 text-primary-foreground" />
-      </span>
+      <VedastraMark className="h-9 w-9 shrink-0 transition-transform duration-500 group-hover:rotate-45" />
       <span className="font-display text-xl font-semibold tracking-tight">Vedastra</span>
     </Link>
   );

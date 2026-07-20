@@ -1,5 +1,6 @@
 import type { BirthChart, VargaId } from '@/lib/astrology/types';
 import type { TransitReport } from '@/lib/astrology/transit';
+import type { RetrievedPassage } from '@/lib/rag/types';
 
 /**
  * Build the grounding system prompt. The computed chart is injected as
@@ -7,7 +8,12 @@ import type { TransitReport } from '@/lib/astrology/transit';
  * rather than generic astrology. `transits` is computed fresh per request —
  * it is deliberately not part of the stored chart, since it changes hourly.
  */
-export function buildSystemPrompt(chart: BirthChart, language = 'en', transits?: TransitReport): string {
+export function buildSystemPrompt(
+  chart: BirthChart,
+  language = 'en',
+  transits?: TransitReport,
+  passages?: RetrievedPassage[],
+): string {
   const planetLines = chart.planets
     .map(
       (p) =>
@@ -89,6 +95,18 @@ export function buildSystemPrompt(chart: BirthChart, language = 'en', transits?:
   // Gochar — the live sky measured against this chart.
   const transitBlock = transits ? buildTransitBlock(transits) : '';
 
+  // Retrieved reference material for this specific question.
+  const referenceBlock = passages?.length
+    ? `
+## Reference Material (retrieved for this question)
+Classical principles relevant to what was asked. Use these to reason correctly; do not quote them at length, and never let them override what the chart above actually says.
+
+${passages
+        .map((p, i) => `### [${i + 1}] ${p.chunk.title} — ${p.chunk.heading}\n${p.chunk.text.trim()}`)
+        .join('\n\n')}
+`
+    : '';
+
   return `You are Vedastra, a warm, wise, and articulate AI Vedic astrologer. You speak to the user as a trusted guide — encouraging, human, and clear, never robotic.
 
 You have the user's complete, precomputed birth chart below. Ground every answer in these specific placements. Reference actual signs, houses, nakshatras, planetary strengths, dashās, yogas, and doshas when they are relevant to the question.
@@ -129,7 +147,7 @@ ${vargaLines}
 
 ## Planetary Strength — Vimśopaka bala (0–100, aggregated across the sixteen ṣoḍaśavarga charts)
 ${vimLines}
-${transitBlock}
+${transitBlock}${referenceBlock}
 # How to respond
 - Answer in the user's language (BCP-47: ${language}). If it is "en", respond in English.
 - Be specific and personal: tie your reading to the placements above.
@@ -137,6 +155,7 @@ ${transitBlock}
 - Daśā says *when* a theme is due; gochar says *what the sky is doing about it now*. Read them together — a favourable daśā under a hard Saturn transit delivers slowly, not never.
 - For "when" questions, time your answer from the daśā stack: the mahādaśā sets the chapter, the antardaśā the year, the pratyantar/sūkṣma the weeks. Name the actual dates and lords, and use the favourable/challenging windows above when the user asks about the road ahead.
 - The favourability scores are computed from the chart, not guesswork — when you call a period strong or difficult, say briefly why (the reasons above), so the reading is explainable rather than pronounced.
+- Where Reference Material is supplied, reason from it — it is this system's own doctrine and keeps your rules consistent. The chart always wins over the reference: if a principle does not apply to these placements, say so rather than forcing it.
 - Explain astrological concepts in simple, human terms.
 - Describe tendencies, timings, and possibilities — never present predictions as guaranteed facts. Respect uncertainty and the user's free will.
 - Be encouraging and constructive. When a placement is challenging, offer perspective and practical remedies (gemstones, colours, mantras, timing) rather than fear.

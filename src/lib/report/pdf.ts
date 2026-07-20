@@ -6,7 +6,7 @@ import { LUCKY_BY_SIGN, ZODIAC } from '@/lib/astrology/signs';
 import { transitsForChart } from '@/lib/astrology/transit';
 import type { TransitReport } from '@/lib/astrology/transit';
 import { COLOR, DIGNITY_TONE, PAGE, TYPE, toneForScore } from './theme';
-import { drawNorthIndianChart, drawSouthIndianChart, type CellPlanet } from './chart-draw';
+import { drawNorthIndianChart, drawSouthIndianChart, drawVedastraMark, type CellPlanet } from './chart-draw';
 
 const A4 = { w: 595.28, h: 841.89 };
 const M = PAGE.margin;
@@ -224,15 +224,17 @@ export function buildReport(chart: BirthChart, generatedAt: string): Promise<Buf
     const a = (i / 12) * Math.PI * 2 - Math.PI / 2;
     doc.circle(cx + Math.cos(a) * 54, emblemY + Math.sin(a) * 54, 1.6).fill(i % 3 === 0 ? COLOR.goldBright : '#6C5FA8');
   }
-  // Symbol font: the text faces carry no zodiac glyphs. On the core-font
-  // fallback nothing here can render one, so set the sign's initial instead of
-  // emitting a broken glyph.
+  // The brand star, drawn from the same geometry as the on-screen mark.
+  drawVedastraMark(doc as never, cx, emblemY, 34, COLOR.goldBright);
+
+  // Ascendant glyph beneath it. The text faces carry no zodiac glyphs, and on
+  // the core-font fallback nothing can render one, so set the sign's short name.
   if (unicode) {
-    doc.font(F.symbol).fontSize(34).fillColor(COLOR.goldBright);
-    doc.text(ZODIAC[chart.ascendant.sign]!.glyph, cx - 40, emblemY - 21, { width: 80, align: 'center' });
+    doc.font(F.symbol).fontSize(15).fillColor('#B9AFE0');
+    doc.text(ZODIAC[chart.ascendant.sign]!.glyph, cx - 40, emblemY + 62, { width: 80, align: 'center' });
   } else {
-    doc.font(F.serifBold).fontSize(26).fillColor(COLOR.goldBright);
-    doc.text(chart.ascendant.signName.slice(0, 3).toUpperCase(), cx - 40, emblemY - 13, { width: 80, align: 'center' });
+    doc.font(F.serifBold).fontSize(12).fillColor('#B9AFE0');
+    doc.text(chart.ascendant.signName.toUpperCase(), cx - 60, emblemY + 64, { width: 120, align: 'center' });
   }
 
   doc.font(F.serifBold).fontSize(TYPE.coverName).fillColor(COLOR.white);

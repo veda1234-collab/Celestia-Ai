@@ -37,3 +37,8 @@ yarn-error.log*
 # Claude Code local settings and scratch files
 .claude/settings.local.json
 .claude/settings.local.json.tmp.*
+
+# RAG index artefacts (rebuild with: pnpm rag:build)
+/data/rag/vectors.bin
+/data/rag/index.json
+/data/rag/sources/
