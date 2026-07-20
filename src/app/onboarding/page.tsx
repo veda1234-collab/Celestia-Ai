@@ -296,7 +296,7 @@ function Welcome({ onEnter }: { onEnter: () => void }) {
         <span className="mx-auto mb-6 grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-primary to-accent shadow-glow">
           <Sparkles className="h-8 w-8 text-primary-foreground" />
         </span>
-        <h1 className="font-display text-4xl font-semibold sm:text-5xl">Welcome to Celestia</h1>
+        <h1 className="font-display text-4xl font-semibold sm:text-5xl">Welcome to Vedastra</h1>
         <p className="mx-auto mt-4 max-w-md text-muted-foreground">
           You&apos;re about to enter a living map of your cosmos. Let&apos;s begin with the moment you arrived.
         </p>

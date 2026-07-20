@@ -27,15 +27,15 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: 'Celestia — AI Astrology Written in the Stars',
-    template: '%s · Celestia',
+    default: 'Vedastra — AI Astrology Written in the Stars',
+    template: '%s · Vedastra',
   },
   description:
     'Personalized AI astrology powered by your birth chart. Discover the story written in the stars with a luxury, cosmic experience.',
   keywords: ['astrology', 'birth chart', 'AI astrologer', 'horoscope', 'kundli', 'vedic astrology', 'natal chart'],
-  authors: [{ name: 'Celestia' }],
+  authors: [{ name: 'Vedastra' }],
   openGraph: {
-    title: 'Celestia — AI Astrology Written in the Stars',
+    title: 'Vedastra — AI Astrology Written in the Stars',
     description: 'Personalized AI astrology powered by your birth chart.',
     type: 'website',
     url: APP_URL,

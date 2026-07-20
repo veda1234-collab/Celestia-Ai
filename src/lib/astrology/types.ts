@@ -1,5 +1,5 @@
 /**
- * Domain types for the Celestia astrology engine.
+ * Domain types for the Vedastra astrology engine.
  * These are provider-agnostic: any calculation backend (local math engine,
  * Swiss Ephemeris service, third-party API) must produce a `BirthChart`.
  */

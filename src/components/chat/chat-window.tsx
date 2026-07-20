@@ -137,7 +137,7 @@ export function ChatWindow({
       <div className="mx-auto w-full max-w-3xl px-4 pb-5">
         <Composer onSend={send} onStop={stop} streaming={streaming} />
         <p className="mt-2 text-center text-[11px] text-muted-foreground/70">
-          Celestia offers guidance for reflection, not guarantees. For medical, legal or financial decisions, consult a professional.
+          Vedastra offers guidance for reflection, not guarantees. For medical, legal or financial decisions, consult a professional.
         </p>
       </div>
     </div>

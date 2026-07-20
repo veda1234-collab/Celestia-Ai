@@ -3,6 +3,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { BirthChart, BirthDetails } from '@/lib/astrology/types';
+// Side-effecting import: carries pre-rebrand localStorage across before hydration.
+import './rebrand-migration';
 
 interface ProfileState {
   details: BirthDetails | null;
@@ -33,7 +35,7 @@ export const useProfile = create<ProfileState>()(
       clear: () => set({ details: null, chart: null }),
     }),
     {
-      name: 'celestia-profile',
+      name: 'vedastra-profile',
       version: PROFILE_STORE_VERSION,
       // Keep the birth details (the expensive thing to re-enter); drop the stale
       // chart so `useChartRefresh` recomputes it against the current engine.

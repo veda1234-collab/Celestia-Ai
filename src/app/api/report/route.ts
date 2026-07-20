@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     return new Response(new Uint8Array(pdf), {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="celestia-${safe}.pdf"`,
+        'Content-Disposition': `attachment; filename="vedastra-${safe}.pdf"`,
         'Cache-Control': 'no-store',
       },
     });

@@ -33,7 +33,7 @@ function pdfSafe(text: string): string {
 
 /** Build a premium, multi-page PDF report for a birth chart. */
 export function buildReport(chart: BirthChart, generatedAt: string): Promise<Buffer> {
-  const doc = new PDFDocument({ size: 'A4', margin: 50, bufferPages: true, info: { Title: `Celestia Report — ${chart.meta.name}`, Author: 'Celestia' } });
+  const doc = new PDFDocument({ size: 'A4', margin: 50, bufferPages: true, info: { Title: `Vedastra Report — ${chart.meta.name}`, Author: 'Vedastra' } });
   const chunks: Buffer[] = [];
   doc.on('data', (c: Buffer) => chunks.push(c));
   const finished = new Promise<Buffer>((resolve) => doc.on('end', () => resolve(Buffer.concat(chunks))));
@@ -67,7 +67,7 @@ export function buildReport(chart: BirthChart, generatedAt: string): Promise<Buf
 
   // ── Cover band ──
   doc.rect(0, 0, doc.page.width, 130).fill(BAND);
-  doc.font('Helvetica-Bold').fontSize(26).fillColor('#ffffff').text('CELESTIA', M, 34, { characterSpacing: 3 });
+  doc.font('Helvetica-Bold').fontSize(26).fillColor('#ffffff').text('VEDASTRA', M, 34, { characterSpacing: 3 });
   doc.font('Helvetica').fontSize(10).fillColor('#c9c2e8').text('Your Personal Astrology Report', M, 68, { characterSpacing: 1 });
   doc.font('Helvetica-Bold').fontSize(15).fillColor('#f5c451').text(pdfSafe(chart.meta.name), M, 92);
   y = 155;
@@ -231,7 +231,7 @@ export function buildReport(chart: BirthChart, generatedAt: string): Promise<Buf
       .fontSize(8)
       .fillColor(MUTED)
       .text(
-        pdfSafe(`Celestia · generated ${generatedAt} · for reflection, not a guarantee · page ${i + 1} of ${range.count}`),
+        pdfSafe(`Vedastra · generated ${generatedAt} · for reflection, not a guarantee · page ${i + 1} of ${range.count}`),
         M,
         doc.page.height - 38,
         { width: W, align: 'center' },

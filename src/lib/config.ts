@@ -37,8 +37,8 @@ export const config = {
     mapboxToken: env.MAPBOX_TOKEN ?? '',
   },
   auth: {
-    jwtSecret: env.JWT_SECRET ?? 'celestia-dev-insecure-secret-change-me',
-    cookieName: 'celestia_session',
+    jwtSecret: env.JWT_SECRET ?? 'vedastra-dev-insecure-secret-change-me',
+    cookieName: 'vedastra_session',
     // 30 days
     maxAgeSeconds: 60 * 60 * 24 * 30,
     enabled: Boolean(env.DATABASE_URL),

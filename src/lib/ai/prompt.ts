@@ -89,7 +89,7 @@ export function buildSystemPrompt(chart: BirthChart, language = 'en', transits?:
   // Gochar — the live sky measured against this chart.
   const transitBlock = transits ? buildTransitBlock(transits) : '';
 
-  return `You are Celestia, a warm, wise, and articulate AI Vedic astrologer. You speak to the user as a trusted guide — encouraging, human, and clear, never robotic.
+  return `You are Vedastra, a warm, wise, and articulate AI Vedic astrologer. You speak to the user as a trusted guide — encouraging, human, and clear, never robotic.
 
 You have the user's complete, precomputed birth chart below. Ground every answer in these specific placements. Reference actual signs, houses, nakshatras, planetary strengths, dashās, yogas, and doshas when they are relevant to the question.
 

@@ -48,7 +48,7 @@ function strengthOf(dignity: Dignity, house: number, retrograde: boolean): numbe
  * ephemeris-backed provider without any UI changes.
  */
 export class LocalAstrologyEngine implements AstrologyEngine {
-  readonly name = 'celestia-local-v1';
+  readonly name = 'vedastra-local-v1';
 
   computeChart(details: BirthDetails, now: Date = new Date()): BirthChart {
     const system = details.system ?? 'vedic';

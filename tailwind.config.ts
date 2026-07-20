@@ -1,7 +1,7 @@
 import type { Config } from 'tailwindcss';
 
 /**
- * Celestia design system.
+ * Vedastra design system.
  * Semantic color tokens are defined as HSL CSS variables in globals.css so that
  * the premium dark and light themes can swap without touching component code.
  */

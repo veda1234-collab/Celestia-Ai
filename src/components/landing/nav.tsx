@@ -18,7 +18,7 @@ export function Logo({ className }: { className?: string }) {
       <span className="relative grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-primary to-accent shadow-glow">
         <Sparkles className="h-5 w-5 text-primary-foreground" />
       </span>
-      <span className="font-display text-xl font-semibold tracking-tight">Celestia</span>
+      <span className="font-display text-xl font-semibold tracking-tight">Vedastra</span>
     </Link>
   );
 }

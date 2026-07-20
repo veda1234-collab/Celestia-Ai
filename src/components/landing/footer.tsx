@@ -41,7 +41,7 @@ export function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>© {2026} Celestia. Crafted under the stars.</p>
+          <p>© {2026} Vedastra. Crafted under the stars.</p>
           <p className="max-w-md sm:text-right">
             For guidance and entertainment. Not a substitute for professional medical, legal or
             financial advice.

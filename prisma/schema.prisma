@@ -1,4 +1,4 @@
-// Celestia data model.
+// Vedastra data model.
 // SQLite by default (runs with zero setup). For production, switch `provider`
 // to "postgresql" and point DATABASE_URL at your Postgres instance — the app
 // code is unchanged. JSON payloads are stored as text for cross-DB portability.

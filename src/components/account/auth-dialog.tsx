@@ -63,7 +63,7 @@ function AuthForms({
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Your Celestia account</DialogTitle>
+        <DialogTitle>Your Vedastra account</DialogTitle>
         <DialogDescription>Save your charts and revisit them from any device.</DialogDescription>
       </DialogHeader>
       <Tabs defaultValue="signin">

@@ -1,8 +1,8 @@
 {
-  "name": "celestia",
+  "name": "vedastra",
   "version": "0.1.0",
   "private": true,
-  "description": "Celestia — a premium AI astrology experience. Discover the story written in the stars.",
+  "description": "Vedastra — a premium AI astrology experience. Discover the story written in the stars.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

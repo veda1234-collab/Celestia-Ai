@@ -33,3 +33,7 @@ yarn-error.log*
 # prisma / local db
 /prisma/*.db
 /prisma/*.db-journal
+
+# Claude Code local settings and scratch files
+.claude/settings.local.json
+.claude/settings.local.json.tmp.*

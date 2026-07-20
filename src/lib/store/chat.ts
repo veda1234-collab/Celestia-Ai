@@ -3,6 +3,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { ChatMessage } from '@/lib/ai/types';
+// Side-effecting import: carries pre-rebrand localStorage across before hydration.
+import './rebrand-migration';
 
 interface ChatState {
   messages: ChatMessage[];
@@ -33,6 +35,6 @@ export const useChat = create<ChatState>()(
         }),
       reset: () => set({ messages: [] }),
     }),
-    { name: 'celestia-chat' },
+    { name: 'vedastra-chat' },
   ),
 );

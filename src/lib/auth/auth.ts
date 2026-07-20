@@ -45,10 +45,18 @@ export async function setSessionCookie(user: SessionUser): Promise<void> {
 export async function clearSessionCookie(): Promise<void> {
   const store = await cookies();
   store.set(config.auth.cookieName, '', { path: '/', maxAge: 0 });
+  // Also clear the pre-rebrand cookie, or a stale one would keep signing the
+  // user back in after they log out.
+  store.set(LEGACY_COOKIE_NAME, '', { path: '/', maxAge: 0 });
 }
+
+/** Session cookie name used before the Celestia → Vedastra rename. */
+const LEGACY_COOKIE_NAME = 'celestia_session';
 
 export async function getSessionUser(): Promise<SessionUser | null> {
   const store = await cookies();
-  const token = store.get(config.auth.cookieName)?.value;
+  // Fall back to the old cookie so sessions issued before the rename survive;
+  // the token payload and secret are unchanged, only the cookie name moved.
+  const token = store.get(config.auth.cookieName)?.value ?? store.get(LEGACY_COOKIE_NAME)?.value;
   return token ? verifyToken(token) : null;
 }

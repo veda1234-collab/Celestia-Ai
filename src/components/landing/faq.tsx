@@ -6,7 +6,7 @@ import { Reveal } from '@/components/ui/reveal';
 const faqs = [
   {
     q: 'Is the astrology real, or just generic?',
-    a: 'Real. Celestia computes your ascendant, planetary longitudes, nakshatras, houses, navāṁśa (D9) and Vimśottari daśā from your exact birth time and place using astronomical algorithms — the same inputs a professional astrologer uses. The engine is provider-pluggable, so it can be upgraded to a Swiss-Ephemeris-grade backend without changing the app.',
+    a: 'Real. Vedastra computes your ascendant, planetary longitudes, nakshatras, houses, navāṁśa (D9) and Vimśottari daśā from your exact birth time and place using astronomical algorithms — the same inputs a professional astrologer uses. The engine is provider-pluggable, so it can be upgraded to a Swiss-Ephemeris-grade backend without changing the app.',
   },
   {
     q: 'Do I need an account or to pay?',
@@ -14,7 +14,7 @@ const faqs = [
   },
   {
     q: 'Which system do you use — Vedic or Western?',
-    a: 'Celestia is Vedic-first (sidereal, Lahiri ayanāṁśa) with nakshatras and daśās, while also surfacing your familiar Western (tropical) Sun sign so nothing feels unfamiliar.',
+    a: 'Vedastra is Vedic-first (sidereal, Lahiri ayanāṁśa) with nakshatras and daśās, while also surfacing your familiar Western (tropical) Sun sign so nothing feels unfamiliar.',
   },
   {
     q: 'How accurate is the birth time requirement?',
@@ -22,7 +22,7 @@ const faqs = [
   },
   {
     q: 'Are the predictions guaranteed?',
-    a: 'No — and any astrologer who guarantees the future should be treated with caution. Celestia describes tendencies, timings and possibilities to reflect on, always respecting your free will. It is for insight and entertainment, not a substitute for medical, legal or financial advice.',
+    a: 'No — and any astrologer who guarantees the future should be treated with caution. Vedastra describes tendencies, timings and possibilities to reflect on, always respecting your free will. It is for insight and entertainment, not a substitute for medical, legal or financial advice.',
   },
 ];
 

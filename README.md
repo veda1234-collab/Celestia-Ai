@@ -1,8 +1,8 @@
-# Celestia — Premium AI Astrology
+# Vedastra — Premium AI Astrology
 
 > Discover the story written in the stars. A luxury, cosmic AI astrology experience built on a **real** birth-chart engine.
 
-Celestia is a full-stack Next.js application that computes an accurate Vedic birth chart from your exact time and place of birth, presents it in an immersive, animated dashboard, and lets you chat with an AI astrologer grounded in your actual placements.
+Vedastra is a full-stack Next.js application that computes an accurate Vedic birth chart from your exact time and place of birth, presents it in an immersive, animated dashboard, and lets you chat with an AI astrologer grounded in your actual placements.
 
 **It runs with zero configuration** — a rich, chart-aware mock astrologer and a bundled offline city database mean no API keys are required to try everything. Add keys to upgrade to live services.
 
@@ -76,7 +76,7 @@ pnpm exec prisma db push      # create the schema (SQLite file or your Postgres 
 
 ## ⚠️ Disclaimer
 
-Celestia is for insight, reflection and entertainment. Its readings describe tendencies and possibilities, not guaranteed outcomes, and are not a substitute for professional medical, legal, or financial advice.
+Vedastra is for insight, reflection and entertainment. Its readings describe tendencies and possibilities, not guaranteed outcomes, and are not a substitute for professional medical, legal, or financial advice.
 
 ## 🔭 Accuracy note
 

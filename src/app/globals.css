@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ─────────────────────────────────────────────
-   Celestia theme tokens (HSL channels, no commas).
+   Vedastra theme tokens (HSL channels, no commas).
    ───────────────────────────────────────────── */
 @layer base {
   :root {

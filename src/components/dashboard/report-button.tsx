@@ -23,7 +23,7 @@ export function ReportButton({ chart }: { chart: BirthChart }) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `celestia-${(chart.meta.name || 'report').replace(/\s+/g, '-').toLowerCase()}.pdf`;
+      a.download = `vedastra-${(chart.meta.name || 'report').replace(/\s+/g, '-').toLowerCase()}.pdf`;
       document.body.appendChild(a);
       a.click();
       a.remove();

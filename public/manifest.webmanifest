@@ -1,6 +1,6 @@
 {
-  "name": "Celestia — AI Astrology",
-  "short_name": "Celestia",
+  "name": "Vedastra — AI Astrology",
+  "short_name": "Vedastra",
   "description": "Personalized AI astrology powered by your birth chart.",
   "start_url": "/",
   "display": "standalone",
