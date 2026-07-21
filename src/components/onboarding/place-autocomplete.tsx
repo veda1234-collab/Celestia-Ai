@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useId, useRef, useState } from 'react';
-import { Loader2, MapPin, Search } from 'lucide-react';
+import { Loader2, Search } from 'lucide-react';
 import type { PlaceResult } from '@/lib/astrology/types';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils/cn';
 
 interface Props {
@@ -10,6 +11,21 @@ interface Props {
   onChange: (place: PlaceResult | null) => void;
   placeholder?: string;
   id?: string;
+}
+
+/** "City — Region", falling back to the composed name when parts are missing. */
+function rowLabel(r: PlaceResult): string {
+  if (r.city && r.region && r.region !== r.city) return `${r.city} — ${r.region}`;
+  if (r.city) return r.city;
+  const [city, region] = r.name.split(',').map((s) => s.trim());
+  return region ? `${city} — ${region}` : city ?? r.name;
+}
+
+/** Right-margin coordinates in the almanac idiom: `19.07°N 72.87°E`. */
+function coordsOf(r: PlaceResult): string {
+  const lat = `${Math.abs(r.lat).toFixed(2)}°${r.lat >= 0 ? 'N' : 'S'}`;
+  const lon = `${Math.abs(r.lon).toFixed(2)}°${r.lon >= 0 ? 'E' : 'W'}`;
+  return `${lat} ${lon}`;
 }
 
 /** Debounced birthplace combobox backed by the /api/places endpoint. */
@@ -69,13 +85,14 @@ export function PlaceAutocomplete({ value, onChange, placeholder = 'Search a cit
   return (
     <div ref={boxRef} className="relative">
       <div className="relative">
-        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <input
+        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-2" />
+        <Input
           id={id}
           role="combobox"
           aria-expanded={open}
           aria-controls={listId}
           aria-autocomplete="list"
+          aria-activedescendant={open && results.length ? `${listId}-opt-${active}` : undefined}
           autoComplete="off"
           value={query}
           placeholder={placeholder}
@@ -100,31 +117,39 @@ export function PlaceAutocomplete({ value, onChange, placeholder = 'Search a cit
               setOpen(false);
             }
           }}
-          className="flex h-12 w-full rounded-xl border border-input bg-background/40 pl-10 pr-10 text-sm backdrop-blur-sm transition-all placeholder:text-muted-foreground/70 focus-visible:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/25"
+          className="pl-10 pr-9"
         />
-        {loading && <Loader2 className="absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-primary" />}
+        {loading && (
+          <Loader2 className="absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-gold/80" />
+        )}
       </div>
 
       {open && results.length > 0 && (
         <ul
           id={listId}
           role="listbox"
-          className="absolute z-50 mt-2 max-h-72 w-full overflow-auto rounded-xl glass-strong p-1.5 shadow-card animate-fade-up"
+          className="absolute z-50 mt-2 max-h-72 w-full divide-y divide-foreground/10 overflow-auto rounded-field glass glass-gilt animate-fade-up"
         >
           {results.map((r, i) => (
-            <li key={r.id} role="option" aria-selected={i === active}>
+            <li key={r.id} id={`${listId}-opt-${i}`} role="option" aria-selected={i === active}>
               <button
                 type="button"
                 onMouseEnter={() => setActive(i)}
                 onClick={() => select(r)}
                 className={cn(
-                  'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm transition-colors',
-                  i === active ? 'bg-primary/15 text-foreground' : 'text-muted-foreground hover:bg-foreground/5',
+                  'flex w-full items-center gap-3 border-l-2 px-3.5 py-2.5 text-left transition-colors',
+                  i === active ? 'border-gold' : 'border-transparent',
                 )}
               >
-                <MapPin className="h-4 w-4 shrink-0 text-primary" />
-                <span className="flex-1 truncate">{r.name}</span>
-                <span className="shrink-0 text-xs text-muted-foreground/70">{r.timezone}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-medium text-foreground">{rowLabel(r)}</span>
+                  <span className="mt-0.5 block font-mono text-[10.5px] tabular-nums tracking-wide text-ink-2/60">
+                    {r.timezone}
+                  </span>
+                </span>
+                <span className="shrink-0 whitespace-nowrap text-right font-mono text-[11px] tabular-nums text-ink-2">
+                  {coordsOf(r)}
+                </span>
               </button>
             </li>
           ))}

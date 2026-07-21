@@ -25,14 +25,39 @@
     --accent: 34 74% 52%;
     --accent-foreground: 42 60% 98%;
 
-    --gold: 40 64% 47%;
+    /* Gold-as-ink, darkened for legibility on ivory. */
+    --gold: 38 62% 42%;
     --gold-foreground: 40 60% 12%;
+    --gold-deep: 40 45% 46%;
+    --champagne: 36 70% 58%;
+
+    /* PLATE — matte paper surfaces (light = ivory twin). */
+    --plate: 42 50% 99.5%;
+    --inset: 42 30% 96%;
+    --well: 42 40% 94%;
+    --ink-2: 230 14% 38%;
+
+    /* Semantic printed pigments (AA-safe on light --plate). */
+    --good: 158 44% 32%;
+    --info: 210 50% 40%;
+    --caution: 32 70% 34%;
+    --care: 350 60% 42%;
 
     --border: 40 30% 86%;
     --input: 40 30% 89%;
     --ring: 38 66% 45%;
 
     --radius: 1rem;
+    /* Rectilinear print radii (keep --radius for backward compat). */
+    --radius-plate: 12px;
+    --radius-field: 8px;
+    --radius-control: 8px;
+    --radius-chip: 6px;
+
+    /* Motion easings — mirror lib/motion.ts. */
+    --ease-ink: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+    --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
 
     /* Cosmic scene colors used by canvas/SVG backdrops. */
     --star: 230 40% 30%;
@@ -58,8 +83,23 @@
     --accent: 40 90% 78%;
     --accent-foreground: 230 60% 8%;
 
-    --gold: 42 74% 70%;
+    /* Gold-as-ink (bright on navy). --gold-deep is used ONLY at /0.34 for rules. */
+    --gold: 42 76% 66%;
     --gold-foreground: 42 60% 9%;
+    --gold-deep: 40 58% 50%;
+    --champagne: 40 92% 82%;
+
+    /* PLATE — matte navy paper surfaces. */
+    --plate: 230 40% 8.5%;
+    --inset: 230 34% 12%;
+    --well: 230 52% 4%;
+    --ink-2: 40 14% 72%;
+
+    /* Semantic printed pigments (AA-safe on navy --plate). */
+    --good: 158 40% 60%;
+    --info: 210 42% 72%;
+    --caution: 36 58% 62%;
+    --care: 6 62% 66%;
 
     --border: 230 32% 21%;
     --input: 230 30% 18%;
@@ -84,6 +124,21 @@
     @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
     text-rendering: optimizeLegibility;
+    /* A printed sheet catching light: a fixed gradient over the flat plate paper. */
+    background-image: linear-gradient(180deg, hsl(var(--background)), hsl(232 60% 4%));
+    background-attachment: fixed;
+  }
+  :root:not(.dark) body {
+    background-image: linear-gradient(180deg, hsl(var(--background)), hsl(42 40% 95%));
+  }
+  /* All Fraunces tracks its render size — the opsz guardrail, for free. */
+  .font-display {
+    font-optical-sizing: auto;
+  }
+  /* Every standalone numeral aligns to the pixel. */
+  .font-mono,
+  .tabular {
+    font-variant-numeric: tabular-nums slashed-zero;
   }
   ::selection {
     background: hsl(var(--primary) / 0.35);
@@ -139,42 +194,198 @@
       hsl(var(--card) / 0.9),
       hsl(var(--card) / 0.68)
     );
-    backdrop-filter: blur(28px) saturate(150%);
-    -webkit-backdrop-filter: blur(28px) saturate(150%);
+    backdrop-filter: blur(16px) saturate(130%);
+    -webkit-backdrop-filter: blur(16px) saturate(130%);
     border: 1px solid hsl(var(--foreground) / 0.1);
+  }
+  /* Soften glass — it is now reserved for the header + floating overlays only. */
+  .glass {
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+  }
+  /* Optional gold top-hairline for the sanctioned glass overlays. */
+  .glass-gilt {
+    box-shadow: inset 0 1px 0 hsl(var(--gold) / 0.4), 0 16px 40px -20px rgba(0, 0, 0, 0.8);
+  }
+
+  /* ── The PLATE system — matte "printed sheet" surfaces ─────────────────── */
+  .plate {
+    position: relative;
+    isolation: isolate;
+    background: hsl(var(--plate));
+    border: 1px solid hsl(var(--foreground) / 0.09);
+    border-radius: var(--radius-plate);
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.04), 0 10px 30px -22px rgba(0, 0, 0, 0.6);
+    transition: border-color 0.16s var(--ease-ink);
+  }
+  :root:not(.dark) .plate {
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.7), 0 12px 30px -24px rgba(30, 27, 20, 0.16);
+  }
+  .plate:hover {
+    border-color: hsl(var(--gold) / 0.55);
+  }
+  /* Paper tooth: one tiled desaturated turbulence at 3%, soft-light. */
+  .plate::before,
+  .page-grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0.03;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-size: 120px 120px;
+  }
+  .page-grain {
+    position: relative;
+  }
+  .page-grain::before {
+    position: fixed;
+    z-index: 0;
+    opacity: 0.025;
+  }
+
+  /* Recessed well — inputs, table zebra, stat tiles. */
+  .plate-inset {
+    background: hsl(var(--inset));
+    border: 1px solid hsl(var(--foreground) / 0.06);
+    border-radius: var(--radius-field);
+  }
+
+  /* Engraved separators. */
+  .rule-gold {
+    height: 1px;
+    border: 0;
+    background: hsl(var(--gold-deep) / 0.34);
+  }
+  .rule-hair {
+    height: 1px;
+    border: 0;
+    background: hsl(var(--foreground) / 0.1);
+  }
+  .hairline {
+    border-color: hsl(var(--foreground) / 0.1);
+  }
+
+  /* Editorial voices. */
+  .kicker {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: hsl(var(--ink-2));
+  }
+  .kicker-gold {
+    color: hsl(var(--gold));
+  }
+  .dateline {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 450;
+    letter-spacing: 0.01em;
+    color: hsl(var(--ink-2));
+    font-variant-numeric: tabular-nums slashed-zero;
+  }
+  .display-hero {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-weight: 380;
+    font-size: clamp(2.75rem, 5vw, 4rem);
+    line-height: 1.03;
+    letter-spacing: -0.015em;
+  }
+  .plate-title {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-weight: 440;
+    font-size: 1.75rem;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .card-subhead {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-weight: 480;
+    font-size: 1.25rem;
+    line-height: 1.2;
+  }
+  .lede {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.375rem;
+    line-height: 1.45;
+    max-width: 62ch;
+  }
+
+  /* Gold Fraunces drop-cap — ::first-letter float is primary, initial-letter enhances. */
+  .dropcap::first-letter {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-optical-sizing: auto;
+    color: hsl(var(--gold));
+    float: left;
+    line-height: 0.8;
+    font-size: 3.1em;
+    padding: 0.02em 0.09em 0 0;
+  }
+  @supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
+    .dropcap::first-letter {
+      -webkit-initial-letter: 3;
+      initial-letter: 3;
+      float: none;
+      font-size: inherit;
+    }
+  }
+
+  /* Semantic dot + meter primitives. */
+  .tone-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+  }
+  .meter-track {
+    position: relative;
+    height: 3px;
+    border-radius: 9999px;
+    background: hsl(var(--inset));
+    overflow: visible;
+  }
+  .meter-fill {
+    height: 100%;
+    border-radius: 9999px;
+  }
+  .meter-caret {
+    position: absolute;
+    top: -2px;
+    width: 2px;
+    height: 7px;
+    background: hsl(var(--gold));
   }
 }
 
 @layer utilities {
-  /* Multi-stop cosmic text gradient. */
+  /* PLATE flattens the retired rainbow gradients — kept as classes so existing
+     markup stays safe, but they now render as flat editorial ink. */
   .text-gradient {
-    background-image: linear-gradient(
-      110deg,
-      hsl(var(--foreground)),
-      hsl(var(--primary)),
-      hsl(var(--accent)),
-      hsl(var(--foreground))
-    );
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: hsl(var(--foreground));
   }
-  .text-gradient-gold {
-    background-image: linear-gradient(
-      110deg,
-      hsl(var(--gold)),
-      hsl(38 96% 82%),
-      hsl(var(--gold))
-    );
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  .text-gradient-gold,
+  .text-gold-ink {
+    background: none;
+    -webkit-text-fill-color: hsl(var(--gold));
+    color: hsl(var(--gold));
   }
-  /* Animated gradient border via mask. */
+  /* Whisper glow — used only on the primary CTA + medallion. */
   .ring-glow {
-    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.4), 0 0 30px -6px hsl(var(--primary) / 0.6);
+    box-shadow: 0 0 0 1px hsl(var(--gold) / 0.22), 0 0 26px -14px hsl(var(--gold) / 0.5);
   }
   .bg-noise {
     background-image: var(--tw-bg-grain, none);

@@ -5,7 +5,17 @@ import { FileDown, Loader2 } from 'lucide-react';
 import type { BirthChart } from '@/lib/astrology/types';
 import { Button } from '@/components/ui/button';
 
-export function ReportButton({ chart }: { chart: BirthChart }) {
+export function ReportButton({
+  chart,
+  variant = 'primary',
+  size = 'default',
+  label = 'Open full report',
+}: {
+  chart: BirthChart;
+  variant?: 'primary' | 'outline' | 'ghost' | 'glass' | 'gold';
+  size?: 'sm' | 'default' | 'lg' | 'icon';
+  label?: string;
+}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
@@ -36,9 +46,9 @@ export function ReportButton({ chart }: { chart: BirthChart }) {
   };
 
   return (
-    <Button variant="glass" size="sm" onClick={download} disabled={loading} title="Download a PDF report">
+    <Button variant={variant} size={size} onClick={download} disabled={loading} title="Download a PDF report">
       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
-      {error ? 'Try again' : 'Report PDF'}
+      {error ? 'Try again' : loading ? 'Preparing…' : label}
     </Button>
   );
 }

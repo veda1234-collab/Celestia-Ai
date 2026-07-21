@@ -2,37 +2,56 @@
 
 import * as React from 'react';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
+import { motion, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils/cn';
 
 export const Tabs = TabsPrimitive.Root;
 
+/** Triggers sit over a single hairline baseline — no pill fill. */
 export const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
 >(({ className, ...props }, ref) => (
   <TabsPrimitive.List
     ref={ref}
-    className={cn('inline-flex items-center gap-1 rounded-full glass p-1', className)}
+    className={cn('relative inline-flex items-center gap-6 border-b border-foreground/10', className)}
     {...props}
   />
 ));
 TabsList.displayName = 'TabsList';
 
+/** Active = cream small-caps + a sliding gold underline shared across triggers. */
 export const TabsTrigger = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Trigger
-    ref={ref}
-    className={cn(
-      'inline-flex items-center justify-center whitespace-nowrap rounded-full px-4 py-1.5 text-sm font-medium text-muted-foreground transition-all',
-      'data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-primary-foreground data-[state=active]:shadow-glow',
-      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-      className,
-    )}
-    {...props}
-  />
-));
+>(({ className, children, ...props }, ref) => {
+  const reduce = useReducedMotion();
+  return (
+    <TabsPrimitive.Trigger
+      ref={ref}
+      className={cn(
+        'group relative -mb-px inline-flex items-center whitespace-nowrap py-2.5 text-[11px] font-semibold uppercase tracking-[0.14em]',
+        'text-ink-2 transition-colors data-[state=active]:text-foreground hover:text-foreground/80',
+        'focus-visible:outline-none focus-visible:text-foreground',
+        className,
+      )}
+      {...props}
+    >
+      {children}
+      <span className="pointer-events-none absolute inset-x-0 bottom-0 hidden group-data-[state=active]:block">
+        {reduce ? (
+          <span className="block h-[2px] w-full bg-gold" />
+        ) : (
+          <motion.span
+            layoutId="ink-underline"
+            className="block h-[2px] w-full bg-gold"
+            transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+          />
+        )}
+      </span>
+    </TabsPrimitive.Trigger>
+  );
+});
 TabsTrigger.displayName = 'TabsTrigger';
 
 export const TabsContent = React.forwardRef<
@@ -41,7 +60,7 @@ export const TabsContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <TabsPrimitive.Content
     ref={ref}
-    className={cn('mt-6 focus-visible:outline-none animate-fade-up', className)}
+    className={cn('mt-5 focus-visible:outline-none animate-ink-rise', className)}
     {...props}
   />
 ));

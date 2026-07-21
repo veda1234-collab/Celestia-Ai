@@ -5,15 +5,15 @@ import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { useProfile } from '@/lib/store/profile';
 import { useChartRefresh, useMounted } from '@/lib/hooks';
-import { CosmicBackground } from '@/components/cosmic';
 import { DashboardHeader } from '@/components/dashboard/header';
-import { SummaryHero } from '@/components/dashboard/summary';
+import { NativityPlate } from '@/components/dashboard/summary';
 import { ChartCard } from '@/components/dashboard/chart-card';
 import { PlanetTable } from '@/components/dashboard/planet-table';
 import { DashaCard } from '@/components/dashboard/dasha-card';
 import { TransitCard } from '@/components/dashboard/transit-card';
-import { LuckyCard, YogaDoshaCard, HoroscopeCard } from '@/components/dashboard/insight-cards';
+import { InsightPlate } from '@/components/dashboard/insight-cards';
 import { Reveal } from '@/components/ui/reveal';
+import { SectionRail } from '@/components/ui/plate';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -29,11 +29,10 @@ export default function DashboardPage() {
 
   if (!mounted || !chart) {
     return (
-      <main className="relative grid min-h-[100svh] place-items-center">
-        <CosmicBackground meteors={false} />
-        <div className="relative z-10 flex flex-col items-center gap-3 text-muted-foreground">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
-          <p className="text-sm">Opening your cosmos…</p>
+      <main className="relative grid min-h-[100svh] place-items-center page-grain">
+        <div className="relative z-10 flex flex-col items-center gap-3 text-ink-2">
+          <Loader2 className="h-6 w-6 animate-spin text-gold" />
+          <p className="text-sm">Opening your almanac…</p>
         </div>
       </main>
     );
@@ -45,43 +44,43 @@ export default function DashboardPage() {
   };
 
   return (
-    <main className="relative min-h-[100svh]">
-      <CosmicBackground meteors={false} />
-      <DashboardHeader name={chart.meta.name} onNewChart={onNewChart} />
+    <main className="relative min-h-[100svh] page-grain">
+      <DashboardHeader name={chart.meta.name} chart={chart} onNewChart={onNewChart} />
 
-      <div className="relative z-10 mx-auto max-w-6xl space-y-6 px-5 py-8">
-        <Reveal>
-          <SummaryHero chart={chart} />
-        </Reveal>
+      <div className="relative z-10 mx-auto flex max-w-[1180px] gap-8 px-5 py-10 xl:px-8">
+        <SectionRail name={chart.meta.name} className="hidden xl:block" />
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          <Reveal className="lg:col-span-2">
-            <ChartCard chart={chart} />
-          </Reveal>
-          <Reveal delay={0.08}>
-            <DashaCard chart={chart} />
-          </Reveal>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-3">
-          <Reveal className="lg:col-span-2">
-            <PlanetTable chart={chart} />
-          </Reveal>
-          <Reveal delay={0.08}>
-            <TransitCard details={details} />
-          </Reveal>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-3">
-          <Reveal>
-            <HoroscopeCard chart={chart} />
-          </Reveal>
-          <Reveal delay={0.08}>
-            <LuckyCard chart={chart} />
-          </Reveal>
-          <Reveal delay={0.16}>
-            <YogaDoshaCard chart={chart} />
-          </Reveal>
+        <div className="min-w-0 flex-1 space-y-16">
+          <section id="plate-01">
+            <Reveal>
+              <NativityPlate chart={chart} details={details} />
+            </Reveal>
+          </section>
+          <section id="plate-02">
+            <Reveal>
+              <ChartCard chart={chart} />
+            </Reveal>
+          </section>
+          <section id="plate-03">
+            <Reveal>
+              <DashaCard chart={chart} />
+            </Reveal>
+          </section>
+          <section id="plate-04">
+            <Reveal>
+              <TransitCard details={details} />
+            </Reveal>
+          </section>
+          <section id="plate-05">
+            <Reveal>
+              <PlanetTable chart={chart} />
+            </Reveal>
+          </section>
+          <section id="plate-06">
+            <Reveal>
+              <InsightPlate chart={chart} />
+            </Reveal>
+          </section>
         </div>
       </div>
     </main>

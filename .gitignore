@@ -42,3 +42,7 @@ yarn-error.log*
 /data/rag/vectors.bin
 /data/rag/index.json
 /data/rag/sources/
+
+# Local UI screenshot harness (not part of the app)
+/__capture.mjs
+/public/__shot.html

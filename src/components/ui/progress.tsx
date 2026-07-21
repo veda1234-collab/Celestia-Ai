@@ -1,15 +1,21 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils/cn';
 
-/** Simple animated progress bar with a cosmic gradient fill. */
+/**
+ * Ruled progress bar — a flat tone fill with a gold caret at the value, matching
+ * the Meter primitive. `tone` accepts any semantic pigment CSS var (default gold).
+ */
 export function Progress({
   value,
   className,
+  tone = 'var(--gold)',
+  caret = true,
   ...props
-}: React.HTMLAttributes<HTMLDivElement> & { value: number }) {
+}: React.HTMLAttributes<HTMLDivElement> & { value: number; tone?: string; caret?: boolean }) {
+  const v = Math.max(0, Math.min(100, value));
   return (
     <div
-      className={cn('h-2 w-full overflow-hidden rounded-full bg-muted', className)}
+      className={cn('meter-track', className)}
       role="progressbar"
       aria-valuenow={Math.round(value)}
       aria-valuemin={0}
@@ -17,9 +23,10 @@ export function Progress({
       {...props}
     >
       <div
-        className="h-full rounded-full bg-gradient-to-r from-primary via-accent to-gold transition-[width] duration-700 ease-out"
-        style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
+        className="meter-fill transition-[width] duration-700 ease-out"
+        style={{ width: `${v}%`, background: `hsl(${tone})` }}
       />
+      {caret && <span className="meter-caret" style={{ left: `calc(${v}% - 1px)` }} />}
     </div>
   );
 }
