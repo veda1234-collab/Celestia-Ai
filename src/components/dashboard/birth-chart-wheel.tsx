@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { Minus, Plus, RotateCcw, RotateCw } from 'lucide-react';
 import type { PlanetId } from '@/lib/astrology/types';
 import { PLANETS, ZODIAC, signLord } from '@/lib/astrology/signs';
+import { cn } from '@/lib/utils/cn';
 
 export interface WheelPlanet {
   id: PlanetId;
@@ -23,6 +24,8 @@ interface Props {
   onHoverHouse?: (house: number | null) => void;
   /** Planet highlighted from the ephemeris table. */
   activePlanet?: PlanetId | null;
+  /** Decorative hero mode: no controls, no readout, slow auto-rotation, glow. */
+  decorative?: boolean;
 }
 
 const SIZE = 460;
@@ -64,6 +67,7 @@ export function BirthChartWheel({
   activeHouse,
   onHoverHouse,
   activePlanet,
+  decorative = false,
 }: Props) {
   const [zoom, setZoom] = useState(1);
   const [rot, setRot] = useState(0);
@@ -96,15 +100,26 @@ export function BirthChartWheel({
 
   return (
     <div className="relative flex flex-col items-center">
-      <div className="absolute right-0 top-0 z-10 flex gap-1.5">
-        <CtrlBtn label="Zoom out" onClick={() => setZoom((z) => Math.max(0.7, z - 0.15))}><Minus className="h-4 w-4" /></CtrlBtn>
-        <CtrlBtn label="Zoom in" onClick={() => setZoom((z) => Math.min(1.8, z + 0.15))}><Plus className="h-4 w-4" /></CtrlBtn>
-        <CtrlBtn label="Rotate left" onClick={() => setRot((r) => r - 30)}><RotateCcw className="h-4 w-4" /></CtrlBtn>
-        <CtrlBtn label="Rotate right" onClick={() => setRot((r) => r + 30)}><RotateCw className="h-4 w-4" /></CtrlBtn>
-        <CtrlBtn label="Reset" onClick={() => { setZoom(1); setRot(0); }}>⟲</CtrlBtn>
-      </div>
+      {!decorative && (
+        <div className="absolute right-0 top-0 z-10 flex gap-1.5">
+          <CtrlBtn label="Zoom out" onClick={() => setZoom((z) => Math.max(0.7, z - 0.15))}><Minus className="h-4 w-4" /></CtrlBtn>
+          <CtrlBtn label="Zoom in" onClick={() => setZoom((z) => Math.min(1.8, z + 0.15))}><Plus className="h-4 w-4" /></CtrlBtn>
+          <CtrlBtn label="Rotate left" onClick={() => setRot((r) => r - 30)}><RotateCcw className="h-4 w-4" /></CtrlBtn>
+          <CtrlBtn label="Rotate right" onClick={() => setRot((r) => r + 30)}><RotateCw className="h-4 w-4" /></CtrlBtn>
+          <CtrlBtn label="Reset" onClick={() => { setZoom(1); setRot(0); }}>⟲</CtrlBtn>
+        </div>
+      )}
 
-      <div className="w-full max-w-[460px] overflow-hidden">
+      {/* Hero glow behind the decorative wheel. */}
+      {decorative && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{ background: 'radial-gradient(circle, hsl(var(--gold) / 0.16), transparent 62%)' }}
+        />
+      )}
+
+      <div className={cn('w-full overflow-visible', decorative ? 'max-w-[520px] animate-[spin-slow_120s_linear_infinite]' : 'max-w-[460px] overflow-hidden')}>
         <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="h-auto w-full select-none" role="img" aria-label={title ?? 'Birth chart'}>
           <g
             style={{ transformBox: 'fill-box', transformOrigin: 'center', transform: `scale(${zoom}) rotate(${rot}deg)` }}
@@ -204,7 +219,8 @@ export function BirthChartWheel({
         </svg>
       </div>
 
-      {/* Hover readout — mono, ruled. */}
+      {/* Hover readout — mono, ruled. Hidden in decorative hero mode. */}
+      {!decorative && (
       <div className="mt-3 min-h-[48px] w-full max-w-[460px] rounded-field plate-inset px-4 py-2.5 text-sm">
         {activeInfo ? (
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
@@ -219,6 +235,7 @@ export function BirthChartWheel({
           <p className="text-ink-2">Hover a house to read it · zoom & rotate with the controls.</p>
         )}
       </div>
+      )}
     </div>
   );
 }

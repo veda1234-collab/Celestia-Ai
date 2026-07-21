@@ -40,7 +40,7 @@ export function Showcase({ chart }: { chart: BirthChart }) {
   ];
 
   return (
-    <section className="relative mx-auto max-w-6xl px-6 py-24">
+    <section id="specimen" className="relative mx-auto max-w-6xl px-6 py-24">
       <Reveal className="mx-auto max-w-2xl text-center">
         <Kicker gold className="justify-center">Specimen · A Reading</Kicker>
         <h2 className="mt-3 plate-title text-[2rem] leading-[1.08] text-foreground sm:text-[2.5rem]">
