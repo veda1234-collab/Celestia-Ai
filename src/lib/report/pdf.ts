@@ -44,6 +44,10 @@ const FONT_FILES = {
   // Liberation has no zodiac signs (U+2648–2653) or ℞ (U+211E); DejaVu does, so
   // it is loaded purely to set those symbols.
   symbol: 'DejaVuSans.ttf',
+  // DejaVu Sans Mono — every numeral (the print echo of the on-screen mono law);
+  // it also carries the IAST diacritics and ℞.
+  mono: 'DejaVuSansMono.ttf',
+  monoBold: 'DejaVuSansMono-Bold.ttf',
 } as const;
 
 type FontKey = keyof typeof FONT_FILES;
@@ -52,6 +56,7 @@ type FontMap = Record<FontKey, string>;
 const HELVETICA_FALLBACK: FontMap = {
   serif: 'Times-Roman', serifBold: 'Times-Bold', serifItalic: 'Times-Italic',
   sans: 'Helvetica', sansBold: 'Helvetica-Bold', symbol: 'Helvetica',
+  mono: 'Courier', monoBold: 'Courier-Bold',
 };
 
 /**
@@ -259,8 +264,9 @@ export function buildReport(chart: BirthChart, generatedAt: string): Promise<Buf
   for (const [k, v] of coverRows) {
     doc.font(F.sans).fontSize(TYPE.tiny).fillColor('#8A80B4');
     doc.text(T(k), M + 70, cy, { width: 150, characterSpacing: 1.2, lineBreak: false });
-    doc.font(F.serif).fontSize(11).fillColor(COLOR.white);
-    doc.text(T(v), M + 225, cy - 2, { width: CONTENT_W - 235, lineBreak: false });
+    // Values in mono — the print echo of the on-screen numeral law (dateline feel).
+    doc.font(F.mono).fontSize(10).fillColor(COLOR.white);
+    doc.text(T(v), M + 225, cy - 1, { width: CONTENT_W - 235, lineBreak: false });
     cy += 16;
     doc.moveTo(M + 70, cy + 2).lineTo(M + CONTENT_W - 70, cy + 2).lineWidth(0.3).stroke('#2E2650');
     cy += 11;
@@ -531,29 +537,41 @@ export function buildReport(chart: BirthChart, generatedAt: string): Promise<Buf
     need(20);
     doc.text(T('THE FULL 120-YEAR CYCLE'), M, y, { characterSpacing: 1.2, width: CONTENT_W });
     y += 14;
-    const total = seq.reduce((s, d) => s + d.years, 0);
-    const barH = 18;
-    need(barH + 26);
+    // The one object shared pixel-for-concept with the on-screen Plate 03: a
+    // proportional 120-year band, quality-tinted fills, and a gold NOW-caret.
+    const spanStart = Date.parse(seq[0]!.startISO);
+    const spanMs = Date.parse(seq[seq.length - 1]!.endISO) - spanStart;
+    const barH = 20;
+    need(barH + 28);
+    const ribbonTop = y;
     let bx = M;
     const nowMs = Date.now();
     for (const d of seq) {
-      const w = (d.years / total) * CONTENT_W;
-      const isNow = nowMs >= Date.parse(d.startISO) && nowMs < Date.parse(d.endISO);
+      const w = (d.years / 120) * CONTENT_W;
       const tone = toneForScore(d.favorability ?? 50);
-      doc.rect(bx, y, w, barH).fill(isNow ? tone.fg : tone.bg);
-      doc.rect(bx, y, w, barH).lineWidth(0.4).stroke(COLOR.white);
-      if (w > 16) {
-        doc.font(F.sansBold).fontSize(6.6).fillColor(isNow ? COLOR.white : COLOR.ink);
-        doc.text(T(d.lord.slice(0, 3)), bx, y + 6, { width: w, align: 'center', lineBreak: false });
+      doc.rect(bx, y, w, barH).fill(tone.bg);
+      doc.rect(bx, y, w, barH).lineWidth(0.4).stroke(COLOR.paper);
+      if (w > 15) {
+        doc.font(F.serifBold).fontSize(7.5).fillColor(COLOR.ink);
+        doc.text(T(d.lord.slice(0, 3)), bx, y + 4.5, { width: w, align: 'center', lineBreak: false });
+        if (w > 26) {
+          doc.font(F.mono).fontSize(6).fillColor(COLOR.muted);
+          doc.text(`${d.years}y`, bx, y + 12, { width: w, align: 'center', lineBreak: false });
+        }
       }
       bx += w;
     }
-    y += barH + 4;
-    doc.font(F.sans).fontSize(TYPE.tiny).fillColor(COLOR.faint);
-    doc.text(T(`birth ${fmtMonth(seq[0]!.startISO)}`), M, y, { width: 120 });
-    doc.text(T(`${fmtMonth(seq[seq.length - 1]!.endISO)}`), M + CONTENT_W - 120, y, { width: 120, align: 'right' });
-    y += 18;
-    para('The filled block is the period running now; the tint reflects each lord’s computed favourability.', {
+    doc.rect(M, ribbonTop, CONTENT_W, barH).lineWidth(0.6).stroke(COLOR.rule);
+    // NOW caret
+    const nowX = M + Math.max(0, Math.min(1, (nowMs - spanStart) / spanMs)) * CONTENT_W;
+    doc.rect(nowX - 1, ribbonTop - 2, 2, barH + 4).fill(COLOR.goldBright);
+    y += barH + 5;
+    doc.font(F.mono).fontSize(TYPE.tiny).fillColor(COLOR.faint);
+    doc.text(`${new Date(seq[0]!.startISO).getFullYear()}`, M, y, { width: 120, lineBreak: false });
+    doc.fillColor(COLOR.gold).text('now', M, y, { width: CONTENT_W, align: 'center', lineBreak: false });
+    doc.fillColor(COLOR.faint).text(`${new Date(seq[seq.length - 1]!.endISO).getFullYear()}`, M + CONTENT_W - 120, y, { width: 120, align: 'right', lineBreak: false });
+    y += 16;
+    para('The gold caret marks today; each block’s tint reflects that lord’s computed favourability.', {
       size: TYPE.tiny, color: COLOR.faint, gap: 12,
     });
   }

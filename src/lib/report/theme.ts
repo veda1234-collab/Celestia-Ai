@@ -8,32 +8,34 @@
  */
 
 export const COLOR = {
-  /** Deep indigo used for full-bleed cover and section bands. */
-  night: '#0B0820',
-  nightSoft: '#171034',
-  /** Primary brand violet. */
-  violet: '#6D28D9',
-  violetSoft: '#EEE8FD',
-  /** Gold for rules, accents and the wordmark. */
-  gold: '#B8912F',
-  goldBright: '#F5C451',
+  /** Navy cover/bands — the same near-black navy as the screen. */
+  night: '#0A0A1F',
+  nightSoft: '#12132B',
+  /** Gold-as-ink, darkened for legibility on ivory paper. */
+  gold: '#9A7B2E',
+  goldBright: '#C9A24B',
+  goldDeep: '#7A5F22',
   /** Body text. */
-  ink: '#171233',
+  ink: '#14162B',
   /** Secondary text. */
   muted: '#6B6580',
   faint: '#9B94AE',
-  /** Hairlines and table borders. */
-  line: '#E4E0F0',
-  /** Zebra striping / soft panels. */
-  wash: '#F7F5FD',
+  /** Paper + hairlines. */
+  paper: '#FBFAF4',
+  wash: '#F7F4EC',
+  line: '#E7E2D6',
+  rule: '#DED7C6',
   white: '#FFFFFF',
-  /** Semantic. */
-  good: '#1F7A5A',
-  goodWash: '#E6F4EF',
+  /** Navy-indigo pigment for the "friend" dignity (replaces violet). */
+  friend: '#3A4C8A',
+  friendWash: '#EAEDF6',
+  /** Semantic. warn = caution pigment, bad = care pigment. */
+  good: '#2E7D5B',
+  goodWash: '#E7F2EC',
   warn: '#A9761B',
-  warnWash: '#FBF1DF',
+  warnWash: '#F6EDDA',
   bad: '#A8324A',
-  badWash: '#FBEAEE',
+  badWash: '#F6E7EB',
 } as const;
 
 /** Point sizes. */
@@ -59,7 +61,7 @@ export const PAGE = {
 export const DIGNITY_TONE: Record<string, { fg: string; bg: string }> = {
   exalted: { fg: COLOR.good, bg: COLOR.goodWash },
   own: { fg: COLOR.good, bg: COLOR.goodWash },
-  friend: { fg: COLOR.violet, bg: COLOR.violetSoft },
+  friend: { fg: COLOR.friend, bg: COLOR.friendWash },
   neutral: { fg: COLOR.muted, bg: COLOR.wash },
   enemy: { fg: COLOR.warn, bg: COLOR.warnWash },
   debilitated: { fg: COLOR.bad, bg: COLOR.badWash },

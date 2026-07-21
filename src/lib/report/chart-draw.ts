@@ -113,7 +113,7 @@ function drawCellContents(
   // An empty house centres its sign number; an occupied one lifts the number so
   // the planets below stay visually centred in the cell.
   const signY = planets.length ? cy - planetSize * 1.5 - signSize : cy - signSize * 0.6;
-  doc.font(opts.fontBold).fontSize(signSize).fillColor(COLOR.violet);
+  doc.font(opts.fontBold).fontSize(signSize).fillColor(COLOR.gold);
   doc.text(String(signNumber), cx - 20, signY, { width: 40, align: 'center' });
 
   if (!planets.length) return;
@@ -137,11 +137,11 @@ export function drawNorthIndianChart(doc: Doc, o: ChartDrawOptions): void {
 
   doc.save();
   doc.rect(x, y, size, size).fill(COLOR.white);
-  doc.rect(x, y, size, size).lineWidth(1.1).stroke(COLOR.violet);
+  doc.rect(x, y, size, size).lineWidth(1.1).stroke(COLOR.ink);
 
-  // Both diagonals. A mid tone rather than the hairline colour, or the internal
-  // geometry washes out when the chart is printed.
-  const GRID = '#B9B0D8';
+  // Both diagonals. A warm paper-grey rather than the hairline colour, or the
+  // internal geometry washes out when the chart is printed.
+  const GRID = '#CFC8B8';
   doc.lineWidth(0.7);
   doc.moveTo(x, y).lineTo(x + size, y + size).stroke(GRID);
   doc.moveTo(x + size, y).lineTo(x, y + size).stroke(GRID);
@@ -197,12 +197,12 @@ export function drawSouthIndianChart(doc: Doc, o: ChartDrawOptions): void {
     const cy = y + c.row * cell;
     const isAsc = c.sign === o.ascendantSign;
 
-    doc.rect(cx, cy, cell, cell).fill(isAsc ? COLOR.violetSoft : COLOR.white);
+    doc.rect(cx, cy, cell, cell).fill(isAsc ? COLOR.friendWash : COLOR.white);
     doc.rect(cx, cy, cell, cell).lineWidth(0.7).stroke(COLOR.line);
     if (isAsc) {
       // The traditional ascendant mark: a stroke across the cell's top-left.
-      doc.lineWidth(1).moveTo(cx, cy).lineTo(cx + cell * 0.30, cy).stroke(COLOR.violet);
-      doc.lineWidth(1).moveTo(cx, cy).lineTo(cx, cy + cell * 0.30).stroke(COLOR.violet);
+      doc.lineWidth(1).moveTo(cx, cy).lineTo(cx + cell * 0.30, cy).stroke(COLOR.gold);
+      doc.lineWidth(1).moveTo(cx, cy).lineTo(cx, cy + cell * 0.30).stroke(COLOR.gold);
     }
 
     const house = houseOfSign.get(c.sign);
@@ -217,6 +217,6 @@ export function drawSouthIndianChart(doc: Doc, o: ChartDrawOptions): void {
   }
 
   // Outer frame drawn last so it sits above the cell strokes.
-  doc.rect(x, y, size, size).lineWidth(1.1).stroke(COLOR.violet);
+  doc.rect(x, y, size, size).lineWidth(1.1).stroke(COLOR.ink);
   doc.restore();
 }
