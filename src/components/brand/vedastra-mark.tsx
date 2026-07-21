@@ -1,5 +1,7 @@
 'use client';
 
+import { useId } from 'react';
+
 /**
  * The Vedastra star mark.
  *
@@ -41,23 +43,54 @@ export function VedastraMark({
   className,
   title = 'Vedastra',
   facetColor = '#0B1030',
+  medallion = false,
 }: {
   className?: string;
   title?: string;
   facetColor?: string;
+  /** Set the star inside a ringed navy disc, matching the full brand emblem. */
+  medallion?: boolean;
 }) {
+  // useId gives ids stable across the server/client boundary, so multiple marks
+  // on a page get unique gradient references without a hydration mismatch.
+  const uid = useId().replace(/:/g, '');
+  const gid = `vd-gold-${uid}`;
+  const rid = `vd-ring-${uid}`;
+  const starScale = medallion ? 0.62 : 1;
+
   return (
     <svg viewBox="0 0 200 200" className={className} role="img" aria-label={title}>
       <defs>
-        <linearGradient id="vd-gold" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#F6D98A" />
           <stop offset="38%" stopColor="#D9AE52" />
           <stop offset="62%" stopColor="#B98B2E" />
           <stop offset="100%" stopColor="#EBC978" />
         </linearGradient>
+        <radialGradient id={rid} cx="50%" cy="38%" r="72%">
+          <stop offset="0%" stopColor="#1A1740" />
+          <stop offset="100%" stopColor="#0B1030" />
+        </radialGradient>
       </defs>
-      <path d={MARK_SOLID} fill="url(#vd-gold)" />
-      <path d={MARK_FACET} fill="none" stroke={facetColor} strokeWidth="1.6" opacity="0.45" />
+
+      {medallion && (
+        <>
+          {/* Navy disc with a double gold rim — the coin the star sits on. */}
+          <circle cx="100" cy="100" r="96" fill={`url(#${rid})`} stroke={`url(#${gid})`} strokeWidth="4" />
+          <circle cx="100" cy="100" r="88" fill="none" stroke={`url(#${gid})`} strokeWidth="1" opacity="0.5" />
+          {/* A few scattered stars in the field. */}
+          {[
+            [58, 46], [148, 60], [40, 120], [160, 132], [128, 40], [72, 150],
+          ].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r={i % 2 ? 1 : 1.6} fill="#EBC978" opacity={0.7} />
+          ))}
+        </>
+      )}
+
+      <g transform={`translate(100 100) scale(${starScale}) translate(-100 -100)`}>
+        <path d={MARK_SOLID} fill={`url(#${gid})`} />
+        <path d={MARK_FACET} fill="none" stroke={medallion ? '#0B1030' : facetColor} strokeWidth="1.6" opacity="0.5" />
+      </g>
     </svg>
   );
 }

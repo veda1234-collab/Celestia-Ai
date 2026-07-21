@@ -10,9 +10,9 @@ import { useMouseParallax } from '@/lib/hooks';
 
 const planets = [
   { size: 18, color: 'from-gold to-amber-300', top: '12%', left: '18%', delay: '0s', depth: 26 },
-  { size: 12, color: 'from-accent to-cyan-300', top: '22%', right: '14%', delay: '-2s', depth: 40 },
-  { size: 26, color: 'from-primary to-fuchsia-400', bottom: '18%', left: '10%', delay: '-4s', depth: 32 },
-  { size: 10, color: 'from-rose-300 to-rose-500', bottom: '26%', right: '20%', delay: '-1s', depth: 48 },
+  { size: 12, color: 'from-primary to-accent', top: '22%', right: '14%', delay: '-2s', depth: 40 },
+  { size: 26, color: 'from-amber-400 to-gold', bottom: '18%', left: '10%', delay: '-4s', depth: 32 },
+  { size: 10, color: 'from-indigo-400 to-indigo-600', bottom: '26%', right: '20%', delay: '-1s', depth: 48 },
 ];
 
 export function Hero() {

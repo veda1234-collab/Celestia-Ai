@@ -17,7 +17,7 @@ export function Aurora({ className }: { className?: string }) {
         style={{ animationDelay: '-11s' }}
       />
       <div
-        className="absolute top-[34%] right-[20%] h-[44vh] w-[44vh] rounded-full bg-fuchsia-500/34 blur-[110px] animate-aurora"
+        className="absolute top-[34%] right-[20%] h-[44vh] w-[44vh] rounded-full bg-indigo-600/34 blur-[110px] animate-aurora"
         style={{ animationDelay: '-3s' }}
       />
       <div

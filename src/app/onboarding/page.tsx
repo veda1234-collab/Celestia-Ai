@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, CalendarDays, Clock, Globe, Sparkles, User } from 'lucide-react';
+import { VedastraMark } from '@/components/brand/vedastra-mark';
 import type { BirthChart, BirthDetails, Gender, PlaceResult } from '@/lib/astrology/types';
 import { CinematicBackground } from '@/components/cosmic';
 import { CosmicLoader } from '@/components/loading/cosmic-loader';
@@ -293,10 +294,10 @@ function Welcome({ onEnter }: { onEnter: () => void }) {
       transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
     >
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-        <span className="mx-auto mb-6 grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-primary to-accent shadow-glow">
-          <Sparkles className="h-8 w-8 text-primary-foreground" />
-        </span>
-        <h1 className="font-display text-4xl font-semibold sm:text-5xl">Welcome to Vedastra</h1>
+        <VedastraMark medallion className="mx-auto mb-6 h-20 w-20 drop-shadow-[0_2px_12px_rgba(217,174,82,0.4)]" />
+        <h1 className="font-display text-4xl font-semibold sm:text-5xl">
+          Welcome to <span className="text-gradient-gold">Vedastra</span>
+        </h1>
         <p className="mx-auto mt-4 max-w-md text-muted-foreground">
           You&apos;re about to enter a living map of your cosmos. Let&apos;s begin with the moment you arrived.
         </p>
