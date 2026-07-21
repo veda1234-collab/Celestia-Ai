@@ -1,7 +1,9 @@
 'use client';
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { ChevronDown } from 'lucide-react';
+import { GlassCard } from '@/components/ui/glass-card';
 import { Reveal } from '@/components/ui/reveal';
+import { Kicker, Rule } from '@/components/ui/plate';
 
 const faqs = [
   {
@@ -29,20 +31,31 @@ const faqs = [
 export function FAQ() {
   return (
     <section id="faq" className="relative mx-auto max-w-3xl px-6 py-28">
-      <Reveal className="mb-12 text-center">
-        <h2 className="font-display text-3xl font-semibold sm:text-5xl">
-          Questions, <span className="text-gradient">answered</span>
+      <Reveal className="mb-10">
+        <Kicker gold>Marginalia</Kicker>
+        <h2 className="mt-2 font-display text-[2rem] font-normal leading-[1.08] tracking-[-0.01em] text-foreground sm:text-[2.5rem]">
+          Questions, answered
         </h2>
+        <Rule className="mt-5" />
       </Reveal>
+
       <Reveal>
-        <Accordion type="single" collapsible>
-          {faqs.map((f, i) => (
-            <AccordionItem key={i} value={`item-${i}`}>
-              <AccordionTrigger>{f.q}</AccordionTrigger>
-              <AccordionContent>{f.a}</AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
+        <GlassCard className="overflow-hidden">
+          <div className="divide-y divide-foreground/10">
+            {faqs.map((f, i) => (
+              <details key={i} className="group px-6">
+                <summary className="flex cursor-pointer list-none items-baseline gap-4 py-5 [&::-webkit-details-marker]:hidden">
+                  <span className="mt-0.5 font-mono text-xs tabular-nums text-gold/70">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className="card-subhead flex-1 text-foreground">{f.q}</span>
+                  <ChevronDown className="mt-1 h-4 w-4 shrink-0 text-ink-2 transition-transform duration-300 group-open:rotate-180" />
+                </summary>
+                <p className="pb-5 pl-9 pr-8 text-sm leading-relaxed text-ink-2">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </GlassCard>
       </Reveal>
     </section>
   );

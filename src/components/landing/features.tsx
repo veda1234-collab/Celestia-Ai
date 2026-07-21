@@ -3,6 +3,7 @@
 import { Compass, MessagesSquare, Orbit, Sparkles, Gem, LineChart } from 'lucide-react';
 import { GlassCard } from '@/components/ui/glass-card';
 import { Reveal } from '@/components/ui/reveal';
+import { Kicker, Rule } from '@/components/ui/plate';
 
 const features = [
   {
@@ -32,32 +33,40 @@ const features = [
   },
   {
     icon: Sparkles,
-    title: 'A Luxury Experience',
-    desc: 'A cosmic, Apple-grade interface with buttery 60fps animations, dark & light modes, and an interactive chart.',
+    title: 'A Considered Interface',
+    desc: 'An editorial, observatory-grade reading room — every chart an engraved figure, every reading a ruled column of prose.',
   },
 ];
 
 export function Features() {
   return (
     <section id="features" className="relative mx-auto max-w-6xl px-6 py-28">
-      <Reveal className="mx-auto max-w-2xl text-center">
-        <h2 className="font-display text-3xl font-semibold sm:text-5xl">
-          A universe of <span className="text-gradient">insight</span>
+      <Reveal className="max-w-2xl">
+        <Kicker gold>The Instruments</Kicker>
+        <h2 className="mt-2 font-display text-[2rem] font-normal leading-[1.08] tracking-[-0.01em] text-foreground sm:text-[2.5rem]">
+          A universe of insight
         </h2>
-        <p className="mt-4 text-muted-foreground">
-          Everything about your chart, made beautiful, personal and easy to understand.
+        <p className="mt-3 text-ink-2">
+          Everything about your chart — computed from real astronomy, engraved as reference figures,
+          and made legible.
         </p>
+        <Rule className="mt-5" />
       </Reveal>
 
-      <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {features.map((f, i) => (
           <Reveal key={f.title} delay={(i % 3) * 0.08}>
-            <GlassCard interactive className="group h-full p-6">
-              <div className="mb-5 inline-grid h-12 w-12 place-items-center rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 text-primary transition-transform duration-500 group-hover:scale-110">
-                <f.icon className="h-6 w-6" />
+            <GlassCard className="flex h-full flex-col p-6">
+              <div className="flex items-center justify-between">
+                <span className="grid h-11 w-11 place-items-center rounded-field plate-inset text-foreground/80">
+                  <f.icon className="h-5 w-5" strokeWidth={1.5} />
+                </span>
+                <span className="font-mono text-[11px] tabular-nums text-ink-2/50">
+                  {String(i + 1).padStart(2, '0')} / {String(features.length).padStart(2, '0')}
+                </span>
               </div>
-              <h3 className="font-display text-lg font-semibold">{f.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
+              <h3 className="card-subhead mt-5 text-foreground">{f.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-2">{f.desc}</p>
             </GlassCard>
           </Reveal>
         ))}

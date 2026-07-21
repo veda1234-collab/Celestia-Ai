@@ -1,19 +1,16 @@
 'use client';
 
-import { motion, useReducedMotion, type Variants } from 'framer-motion';
-import type { ReactNode } from 'react';
-
-const variants: Variants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0 },
-};
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 /**
- * Scroll-triggered entrance animation with an optional stagger delay.
+ * Scroll-triggered entrance animation.
  *
- * When the viewer prefers reduced motion the content renders immediately in its
- * final state — both an accessibility requirement and what makes the component
- * capturable in headless snapshots, where IntersectionObserver never fires.
+ * Deliberately CSS + a self-controlled IntersectionObserver rather than
+ * framer's `whileInView`: that path leaves content at opacity:0 whenever the
+ * observer never fires (headless capture) or when `useReducedMotion` resolves
+ * a beat after hydration. Here the content is guaranteed to become visible —
+ * on intersect, or immediately for reduced-motion / no-observer environments,
+ * or via a short fallback timer — so a reveal can never trap content off-screen.
  */
 export function Reveal({
   children,
@@ -24,22 +21,52 @@ export function Reveal({
   delay?: number;
   className?: string;
 }) {
-  const reduce = useReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+  const [shown, setShown] = useState(false);
 
-  if (reduce) {
-    return <div className={className}>{children}</div>;
-  }
+  useEffect(() => {
+    const prefersReduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced || typeof IntersectionObserver === 'undefined') {
+      setShown(true);
+      return;
+    }
+    const el = ref.current;
+    if (!el) {
+      setShown(true);
+      return;
+    }
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setShown(true);
+          obs.disconnect();
+        }
+      },
+      { rootMargin: '0px 0px -80px 0px' },
+    );
+    obs.observe(el);
+    // Fallback: never leave content hidden if the observer somehow never fires.
+    const t = setTimeout(() => setShown(true), 1200);
+    return () => {
+      obs.disconnect();
+      clearTimeout(t);
+    };
+  }, []);
 
   return (
-    <motion.div
+    <div
+      ref={ref}
       className={className}
-      variants={variants}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.56, ease: [0.16, 1, 0.3, 1], delay }}
+      style={{
+        opacity: shown ? 1 : 0,
+        transform: shown ? 'none' : 'translateY(16px)',
+        transition: `opacity 560ms cubic-bezier(0.16,1,0.3,1) ${delay}s, transform 560ms cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+        willChange: shown ? undefined : 'opacity, transform',
+      }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
