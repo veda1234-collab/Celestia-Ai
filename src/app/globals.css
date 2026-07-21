@@ -22,8 +22,9 @@
     --accent: 190 82% 44%;
     --accent-foreground: 200 60% 8%;
 
-    --gold: 38 92% 50%;
-    --gold-foreground: 38 60% 12%;
+    /* Matched to the logo mark's brushed gold (#D9AE52) rather than the old amber. */
+    --gold: 41 64% 52%;
+    --gold-foreground: 40 60% 12%;
 
     --border: 250 30% 88%;
     --input: 250 30% 90%;
@@ -53,7 +54,8 @@
     --accent: 190 100% 64%;
     --accent-foreground: 200 60% 6%;
 
-    --gold: 44 100% 68%;
+    /* Logo mark's bright gold (#EBC978) for dark mode. */
+    --gold: 42 74% 70%;
     --gold-foreground: 42 60% 9%;
 
     --border: 258 42% 22%;
