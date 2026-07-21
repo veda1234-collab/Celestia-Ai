@@ -7,6 +7,7 @@ import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Kicker } from '@/components/ui/plate';
 import { ZodiacWheel } from '@/components/cosmic';
+import { useMounted } from '@/lib/hooks';
 import { easeInk } from '@/lib/motion';
 
 /**
@@ -17,7 +18,12 @@ import { easeInk } from '@/lib/motion';
  * parallax, no infinite shimmer.
  */
 export function Hero() {
-  const reduce = useReducedMotion();
+  // Gate the reduced-motion branch behind mount so the first client render
+  // always matches the server (which has no media query) — otherwise a
+  // reduced-motion user hydrates a different `initial` than the SSR output.
+  const prefersReduced = useReducedMotion();
+  const mounted = useMounted();
+  const reduce = mounted && prefersReduced;
 
   // Gold on both far ends, one champagne band at centre. Sweeping the
   // background-position 0% → 100% walks that highlight across the words once,

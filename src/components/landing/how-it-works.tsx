@@ -13,7 +13,7 @@ const steps = [
 
 export function HowItWorks() {
   return (
-    <section id="how" className="relative mx-auto max-w-6xl px-6 py-28">
+    <section id="how" className="relative mx-auto max-w-6xl px-6 py-24">
       <Reveal className="max-w-2xl">
         <Kicker gold>The Method</Kicker>
         <h2 className="mt-2 font-display text-[2rem] font-normal leading-[1.08] tracking-[-0.01em] text-foreground sm:text-[2.5rem]">

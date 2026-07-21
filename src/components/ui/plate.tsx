@@ -5,6 +5,20 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils/cn';
 import { DUR, easeInk } from '@/lib/motion';
 
+/**
+ * Reduced-motion, gated behind mount. framer's `useReducedMotion` returns the
+ * media-query value immediately on the client, which differs from the server
+ * (no media query) and mismatches hydration whenever a component branches its
+ * DOM on it. Deferring to `false` until mounted keeps the first client render
+ * identical to the SSR output.
+ */
+function useSafeReducedMotion(): boolean {
+  const reduce = useReducedMotion();
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+  return mounted ? !!reduce : false;
+}
+
 /** The five semantic pigments, plus neutral ink. */
 export type Tone = 'good' | 'info' | 'caution' | 'care' | 'gold' | 'neutral';
 
@@ -51,7 +65,7 @@ export function Rule({
   className?: string;
   animate?: boolean;
 }) {
-  const reduce = useReducedMotion();
+  const reduce = useSafeReducedMotion();
   const base = cn('h-px w-full border-0', gold ? 'rule-gold' : 'rule-hair', className);
   if (reduce || !animate) return <hr className={base} />;
   return (
@@ -204,7 +218,7 @@ export function CountUp({
   suffix?: string;
   className?: string;
 }) {
-  const reduce = useReducedMotion();
+  const reduce = useSafeReducedMotion();
   const ref = React.useRef<HTMLSpanElement>(null);
   const [display, setDisplay] = React.useState(reduce ? value : 0);
 

@@ -30,7 +30,7 @@ const faqs = [
 
 export function FAQ() {
   return (
-    <section id="faq" className="relative mx-auto max-w-3xl px-6 py-28">
+    <section id="faq" className="relative mx-auto max-w-3xl px-6 py-24">
       <Reveal className="mb-10">
         <Kicker gold>Marginalia</Kicker>
         <h2 className="mt-2 font-display text-[2rem] font-normal leading-[1.08] tracking-[-0.01em] text-foreground sm:text-[2.5rem]">

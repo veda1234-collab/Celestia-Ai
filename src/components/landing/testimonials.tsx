@@ -30,7 +30,7 @@ const quotes = [
 
 export function Testimonials() {
   return (
-    <section id="testimonials" className="relative mx-auto max-w-6xl px-6 py-28">
+    <section id="testimonials" className="relative mx-auto max-w-6xl px-6 py-24">
       <Reveal className="max-w-2xl">
         <Kicker gold>Voices</Kicker>
         <h2 className="mt-2 font-display text-[2rem] font-normal leading-[1.08] tracking-[-0.01em] text-foreground sm:text-[2.5rem]">
